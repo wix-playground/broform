@@ -1,19 +1,9 @@
 import * as React from 'react';
 import {observer, Provider} from 'mobx-react';
-import {FormController, FormValidationErrors, FormValues} from '../FormController';
+import {FormController, FormControllerOptions} from '../FormController';
 import {FormPart, FormPartProps} from '../FormPart';
 
-export interface FormProps extends FormPartProps {
-  initialValues?: FormValues;
-  onValidate?: (values: any) => any;
-  onSubmit?: (
-    errors: FormValidationErrors,
-    values: FormValues,
-    submitEvent?: React.FormEvent<any>,
-  ) => void;
-  formatter?: (values: FormValues) => FormValues;
-  controller?: FormController;
-}
+export interface FormProps extends FormControllerOptions, FormPartProps {}
 
 @observer
 export class Form extends React.Component<FormProps, any> {

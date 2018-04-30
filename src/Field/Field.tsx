@@ -64,7 +64,8 @@ export interface FieldProps extends InjectedFieldProps, OwnFieldProps {}
 @observer
 export class Field extends React.Component<FieldProps> {
   static defaultProps = {
-    isEqual: (newValue: any, oldValue: any) => newValue === oldValue || (isEmpty(newValue) && isEmpty(oldValue)),
+    isEqual: (newValue: any, oldValue: any) =>
+      newValue === oldValue || (isEmpty(newValue) && isEmpty(oldValue)),
     persist: false,
   };
 
@@ -107,22 +108,22 @@ export class Field extends React.Component<FieldProps> {
   //custom state for field, passed to adapter
   protected setCustomState = (key: string, value: any) => {
     this.props.controller.setFieldCustomState(this.props.name, key, value);
-  }
+  };
 
   //focus handler, passed to adapter
   protected onFocus = (): void => {
     this.props.controller.changeFieldActiveState(this.props.name, true);
-  }
+  };
 
   //blur handler, passed to adapter
   protected onBlur = (): void => {
     this.props.controller.changeFieldActiveState(this.props.name, false);
-  }
+  };
 
   //value change handler, passed to adapter
   protected onChange = (value: any): void => {
     this.props.controller.changeFieldValue(this.props.name, value);
-  }
+  };
 
   //registers Field in FormController
   constructor(props: FieldProps) {
@@ -154,8 +155,10 @@ export class Field extends React.Component<FieldProps> {
       },
     };
 
-    return this.props.adapter
-      ? <this.props.adapter {...injectedAdapterProps} {...this.props.adapterProps} />
-      : this.props.children(injectedAdapterProps);
+    return this.props.adapter ? (
+      <this.props.adapter {...injectedAdapterProps} {...this.props.adapterProps} />
+    ) : (
+      this.props.children(injectedAdapterProps)
+    );
   }
 }

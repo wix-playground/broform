@@ -7,10 +7,7 @@ export {
   FieldProps,
   Field,
 } from './Field';
-export {
-  FormProps,
-  Form,
-} from './Form';
+export {FormProps, Form} from './Form';
 export {
   FormController,
   FormAPI,

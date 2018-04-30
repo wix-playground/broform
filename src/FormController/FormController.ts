@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {observable, action, runInAction, toJS, computed} from 'mobx';
-import {FormProps} from '../Form';
 import {flatten} from 'flat';
 import {Field, FieldProps, ValidationFunction} from '../Field';
 const set = require('lodash/set');
@@ -19,6 +18,17 @@ export type FormValues = {
 };
 
 export type FieldValidationError = string | string[] | null;
+
+export interface FormControllerOptions {
+  initialValues?: FormValues;
+  onValidate?: (values: any) => any;
+  onSubmit?: (
+    errors: FormValidationErrors,
+    values: FormValues,
+    submitEvent?: React.FormEvent<any>,
+  ) => void;
+  formatter?: (values: FormValues) => FormValues;
+}
 
 export interface FormField {
   instance: Field;
@@ -59,7 +69,7 @@ export interface FormAPI {
 
 export class FormController {
   //Form props
-  protected readonly props: FormProps;
+  protected readonly props: FormControllerOptions;
 
   //get all field level validations
   @computed
@@ -119,7 +129,7 @@ export class FormController {
   //executes general form validator passed to Form as a `onValidate` prop and returns errors
   protected formValidationErrors = async () => {
     return this.props.onValidate ? await this.props.onValidate(this.formattedValues) : {};
-  }
+  };
 
   //executes all field level validators passed to Fields as a `validate` prop and returns errors
   protected validateAllFields = async (
@@ -170,17 +180,17 @@ export class FormController {
         });
       });
     });
-  }
+  };
 
   //validates particular field by calling field level validator passed to Field as a `validate` prop
   protected validateField = async (name: string): Promise<any> => {
     return await this.fieldValidations[name](get(this.values, name), this.values);
-  }
+  };
 
   //returns true if field different from its initial value
   protected isFormFieldDirty = (field: FormField, value: any): boolean => {
     return !field.props.isEqual(field.meta.initialValue, value);
-  }
+  };
 
   //general handler for resetting form to specific state
   @action
@@ -198,10 +208,13 @@ export class FormController {
     });
     this.setSubmitCount(0);
     this.updateAllFieldsErrors({});
-  }
+  };
 
   //construct initial meta info for field
-  protected constructDefaultFieldMeta = (field: React.Component<FieldProps>, options: {initialValue: any}): FormFieldMeta => {
+  protected constructDefaultFieldMeta = (
+    field: React.Component<FieldProps>,
+    options: {initialValue: any},
+  ): FormFieldMeta => {
     const controller = this;
     const {name} = field.props;
 
@@ -215,7 +228,7 @@ export class FormController {
         return !field.props.isEqual(controller.fields.get(name).value, this.initialValue);
       },
     };
-  }
+  };
 
   //used for cases when field was created, unmounted and created again
   @action
@@ -228,7 +241,7 @@ export class FormController {
     field.meta.isActive = false;
     field.meta.isValidating = false;
     field.validation = fieldInstance.props.validation;
-  }
+  };
 
   //used for first time field creation
   @action
@@ -248,12 +261,15 @@ export class FormController {
       meta: this.constructDefaultFieldMeta(fieldInstance, {initialValue}),
       validation: props.validation,
     });
-  }
+  };
 
   @action
-  protected updateFieldError = (fieldName: string, errors: {[name: string]: FieldValidationError}) => {
+  protected updateFieldError = (
+    fieldName: string,
+    errors: {[name: string]: FieldValidationError},
+  ) => {
     this.fields.get(fieldName).errors = errors[fieldName] ? errors[fieldName] : null;
-  }
+  };
 
   //sets errors for all fields
   @action
@@ -268,9 +284,9 @@ export class FormController {
 
       field.errors = errors ? errors : null;
     });
-  }
+  };
 
-  constructor(props: any) {
+  constructor(props: FormControllerOptions) {
     this.props = props;
   }
 
@@ -335,7 +351,7 @@ export class FormController {
   @observable formCustomState: any = {};
   @action setFormCustomState = (key: string, value: any) => (this.formCustomState[key] = value);
 
-    //general handler for registering the field upon it's creation
+  //general handler for registering the field upon it's creation
   registerField = (field: Field) => {
     const {name} = field.props;
     if (this.fields.has(name)) {
@@ -343,7 +359,7 @@ export class FormController {
     } else {
       this.registerNewField(field);
     }
-  }
+  };
 
   //is called when field is unmounted
   @action
@@ -355,7 +371,7 @@ export class FormController {
     } else {
       this.fields.delete(fieldName);
     }
-  }
+  };
 
   //validates the form by calling general form validator combined with field level validators
   validate = async (name?: string) => {
@@ -374,7 +390,7 @@ export class FormController {
     }
 
     this.setIsValidating(false);
-  }
+  };
 
   //changes field active state usually based on 'blur'/'focus' events
   @action
@@ -384,36 +400,36 @@ export class FormController {
       field.meta.isTouched = true;
     }
     field.meta.isActive = isActive;
-  }
+  };
 
   //changes field custom state set by user
   @action
   setFieldCustomState = (fieldName: string, key: string, value: any) => {
     this.fields.get(fieldName).meta.custom[key] = value;
-  }
+  };
 
   //changes when user interacts with the the field, usually 'focus' event
   @action
   setFieldTouched = (fieldName: string) => {
     this.fields.get(fieldName).meta.isTouched = true;
-  }
+  };
 
   //changes when called adapted onChange handler
   @action
   changeFieldValue = (fieldName: string, value: any) => {
     const field = this.fields.get(fieldName);
     field.value = value;
-  }
+  };
 
   //resets the form to initial values and making it pristine
   reset = (values = this.props.initialValues) => {
     return this.resetToValues(values);
-  }
+  };
 
   //clears all form values and making it pristine
   clear = () => {
     return this.resetToValues({});
-  }
+  };
 
   //wraps submit function passed as a form `onSubmit` prop and it's being passed to child render function
   submit = async (submitEvent?: React.FormEvent<any>) => {
@@ -441,5 +457,5 @@ export class FormController {
         this.setIsSubmitting(false);
       }
     });
-  }
+  };
 }
