@@ -5,13 +5,13 @@ import {FormController, FormField} from '../FormController';
 const isEmpty = require('lodash/isEmpty');
 
 export type ValidationFunction =
-    | ((value: any, values: any) => string[] | null)
-    | ((value: any, values: any) => Promise<string[] | null>);
+  | ((value: any, values: any) => string[] | null)
+  | ((value: any, values: any) => Promise<string[] | null>);
 
 export type FieldAdapter =
-    | ((adapterProps: AdapterProps) => JSX.Element)
-    | React.ComponentClass<any>
-    | React.SFC<any>;
+  | ((adapterProps: AdapterProps) => JSX.Element)
+  | React.ComponentClass<any>
+  | React.SFC<any>;
 
 export interface AdapterMetaInfo {
   errors: string | string[] | null;
@@ -47,7 +47,7 @@ export interface InjectedFieldProps {
   controller?: FormController;
 }
 
-export interface ownFieldProps {
+export interface OwnFieldProps {
   name: string;
   children?: (injectedAdapterProps: AdapterProps) => JSX.Element;
   adapter?: FieldAdapter;
@@ -58,7 +58,7 @@ export interface ownFieldProps {
   adapterProps?: any;
 }
 
-export interface FieldProps extends InjectedFieldProps, ownFieldProps {}
+export interface FieldProps extends InjectedFieldProps, OwnFieldProps {}
 
 @inject('controller')
 @observer
@@ -142,7 +142,7 @@ export class Field extends React.Component<FieldProps> {
 
     const injectedAdapterProps: AdapterProps = {
       broform: {
-        name: name,
+        name,
         meta: this.meta,
         value: this.value,
         onChange: this.onChange,
@@ -156,7 +156,6 @@ export class Field extends React.Component<FieldProps> {
 
     return this.props.adapter
       ? <this.props.adapter {...injectedAdapterProps} {...this.props.adapterProps} />
-      : this.props.children(injectedAdapterProps)
-    ;
+      : this.props.children(injectedAdapterProps);
   }
 }
