@@ -1,0 +1,95 @@
+{
+  "name": "rockform",
+  "version": "1.0.0",
+  "license": "UNLICENSED",
+  "authors": [
+    {
+      "name": "Iaroslav Shvets",
+      "email": "iaroslavs@wix.com"
+    }
+  ],
+  "engines": {
+    "node": ">=8"
+  },
+  "publishConfig": {
+    "registry": "http://npm.dev.wixpress.com/"
+  },
+  "scripts": {
+    "start": "webpack --config webpack.config.js",
+    "precommit": "lint-staged",
+    "format": "prettier --write '{src,test}/**/*.{ts,tsx,js,json,scss,css}'"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,json,scss,css}": [
+      "prettier --write",
+      "git add"
+    ],
+    "*.{ts,tsx}": [
+      "tslint --fix"
+    ]
+  },
+  "jest": {
+    "setupFiles": [
+      "./test/jest-setup.ts"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "globals": {
+      "ts-jest": {
+        "enableTsDiagnostics": true
+      }
+    },
+    "testRegex": "(/src/.*|(\\.|/)(spec))\\.(ts?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "json"
+    ]
+  },
+  "main": "./dist/src/index.js",
+  "devDependencies": {
+    "@types/chai": "^4.1.2",
+    "@types/enzyme": "^3.1.10",
+    "@types/enzyme-adapter-react-15": "^1.0.2",
+    "@types/flat": "^0.0.28",
+    "@types/jest": "^22.2.3",
+    "@types/lodash-es": "^4.17.0",
+    "@types/mocha": "^5.1.0",
+    "@types/react": "^16.3.11",
+    "@types/react-dom": "^16.0.5",
+    "@types/sinon": "^4.3.1",
+    "chai": "^4.1.2",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-15": "^1.0.5",
+    "husky": "^0.14.3",
+    "jest": "^22.4.3",
+    "jsdom": "^11.8.0",
+    "jsdom-global": "^3.0.2",
+    "lint-staged": "^7.0.4",
+    "mobx": "^4.1.1",
+    "mobx-react": "^5.0.0",
+    "mocha": "^5.1.1",
+    "prettier": "^1.12.1",
+    "react": "15.6.1",
+    "react-dom": "15.6.1",
+    "sinon": "^4.5.0",
+    "ts-jest": "^22.4.4",
+    "ts-loader": "^4.2.0",
+    "tslib": "^1.9.0",
+    "tslint-config-prettier": "^1.10.0",
+    "typescript": "^2.8.3",
+    "webpack": "^4.6.0",
+    "webpack-cli": "^2.0.15"
+  },
+  "dependencies": {
+    "flat": "^4.0.0",
+    "lodash-es": "^4.17.8"
+  },
+  "peerDependencies": {
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "mobx": "^4.1.1",
+    "mobx-react": "^5.0.0"
+  }
+}
