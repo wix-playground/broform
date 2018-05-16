@@ -35,6 +35,9 @@
     "setupFiles": [
       "./test/jest-setup.ts"
     ],
+    "testEnvironmentOptions": {
+      "pretendToBeVisual": true
+    },
     "moduleNameMapper": {
       "^.+\\.(css|scss)$": "identity-obj-proxy"
     },
@@ -78,8 +81,6 @@
     "enzyme-to-json": "^3.3.3",
     "husky": "^0.14.3",
     "jest": "^22.4.3",
-    "jsdom": "^11.8.0",
-    "jsdom-global": "^3.0.2",
     "lint-staged": "^7.0.4",
     "mobx": "^4.1.1",
     "mobx-react": "^5.0.0",
@@ -93,7 +94,7 @@
     "ts-jest": "^22.4.6",
     "ts-loader": "^4.2.0",
     "tslib": "^1.9.0",
-    "tslint": "latest",
+    "tslint": "5.10.0",
     "tslint-config-prettier": "^1.10.0",
     "typescript": "^2.8.3",
     "webpack": "^4.6.0",
