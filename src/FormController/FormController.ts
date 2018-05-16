@@ -27,10 +27,10 @@ export interface FormControllerOptions {
 }
 
 export interface FormField {
-  instance: Field;
+  instance: null | Field;
   errors: FieldValidationError;
   meta: FormFieldMeta;
-  props: FieldProps;
+  props: null | FieldProps;
   value: any;
   isRegistered: boolean;
 }
@@ -162,13 +162,13 @@ export class FormController {
 
   @action
   protected createVirtualField = (name: string) => {
-    const controller = this;
+    const self = this;
 
     this.fields.set(name, {
       instance: null,
       errors: null,
       value: null,
-      props: {} as FieldProps,
+      props: null,
       isRegistered: false,
       meta: {
         isEqual: (a: any, b: any) => a === b,
@@ -178,7 +178,7 @@ export class FormController {
         isActive: false,
         isValidating: false,
         get isDirty() {
-          const field = controller.fields.get(name);
+          const field = self.fields.get(name);
           return !field.meta.isEqual(field.value, field.meta.initialValue);
         },
       },
@@ -208,7 +208,7 @@ export class FormController {
         isTouched: false,
         isActive: false,
         isValidating: false,
-      }
+      },
     });
   };
 
@@ -241,8 +241,8 @@ export class FormController {
   protected updateErrorOnEveryFieldUsing = (formValidationErrors: FormValidationErrors) => {
     const fieldErrors: {[key: string]: string[] | null} = formValidationErrors
       ? flatten(formValidationErrors, {
-          safe: true,
-        })
+        safe: true,
+      })
       : null;
 
     this.fields.forEach((field) => {
@@ -432,6 +432,5 @@ export class FormController {
     } finally {
       this.setIsSubmitting(false);
     }
-  }
-
+  };
 }
