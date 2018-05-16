@@ -1,5 +1,5 @@
 {
-  "name": "rockform",
+  "name": "broform",
   "version": "1.0.0",
   "license": "UNLICENSED",
   "authors": [
@@ -15,7 +15,10 @@
     "registry": "http://npm.dev.wixpress.com/"
   },
   "scripts": {
-    "start": "webpack --config webpack.config.js",
+    "build": "webpack --config webpack.config.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "precommit": "lint-staged",
     "format": "prettier --write '{src,test}/**/*.{ts,tsx,js,json,scss,css}'"
   },
@@ -32,17 +35,26 @@
     "setupFiles": [
       "./test/jest-setup.ts"
     ],
+    "moduleNameMapper": {
+      "^.+\\.(css|scss)$": "identity-obj-proxy"
+    },
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
     "transform": {
-      "^.+\\.tsx?$": "ts-jest"
+      "^.+\\.(ts|tsx)?$": "ts-jest"
     },
     "globals": {
       "ts-jest": {
-        "enableTsDiagnostics": true
+        "enableTsDiagnostics": false,
+        "ignoreCoverageForDecorators": true,
+        "ignoreCoverageForAllDecorators": true
       }
     },
-    "testRegex": "(/src/.*|(\\.|/)(spec))\\.(ts?|tsx?)$",
+    "testRegex": "/__tests__/.*\\.(ts|tsx)$",
     "moduleFileExtensions": [
       "ts",
+      "js",
       "tsx",
       "json"
     ]
@@ -62,6 +74,8 @@
     "chai": "^4.1.2",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-15": "^1.0.5",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme-to-json": "^3.3.3",
     "husky": "^0.14.3",
     "jest": "^22.4.3",
     "jsdom": "^11.8.0",
@@ -73,10 +87,13 @@
     "prettier": "^1.12.1",
     "react": "15.6.1",
     "react-dom": "15.6.1",
+    "react-test-renderer": "^16.3.2",
+    "semantic-release": "^15.4.1",
     "sinon": "^4.5.0",
-    "ts-jest": "^22.4.4",
+    "ts-jest": "^22.4.6",
     "ts-loader": "^4.2.0",
     "tslib": "^1.9.0",
+    "tslint": "latest",
     "tslint-config-prettier": "^1.10.0",
     "typescript": "^2.8.3",
     "webpack": "^4.6.0",
