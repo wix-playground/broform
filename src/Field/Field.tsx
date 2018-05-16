@@ -8,10 +8,7 @@ export type ValidationFunction =
   | ((value: any, values: any) => string[] | null)
   | ((value: any, values: any) => Promise<string[] | null>);
 
-export type FieldAdapter =
-  | ((adapterProps: AdapterProps) => JSX.Element)
-  | React.ComponentClass<any>
-  | React.SFC<any>;
+export type FieldAdapter = ((adapterProps: AdapterProps) => JSX.Element) | React.ComponentClass<any> | React.SFC<any>;
 
 export interface AdapterMetaInfo {
   errors: string | string[] | null;
@@ -39,7 +36,7 @@ export interface AdapterProps {
     onChange: (value: any) => void;
     onFocus: () => void;
     onBlur: () => void;
-    validate: (name?: string) => void;
+    validate: () => void;
   };
 }
 
@@ -47,13 +44,15 @@ export interface InjectedFieldProps {
   controller?: FormController;
 }
 
+export type EqualityFunction = (newValue: any, oldValue: any) => boolean;
+
 export interface OwnFieldProps {
   name: string;
   children?: (injectedAdapterProps: AdapterProps) => JSX.Element;
   adapter?: FieldAdapter;
   defaultValue?: any;
   validation?: ValidationFunction;
-  isEqual?: (newValue: any, oldValue: any) => boolean;
+  isEqual?: EqualityFunction;
   persist?: boolean;
   adapterProps?: any;
 }
@@ -64,8 +63,7 @@ export interface FieldProps extends InjectedFieldProps, OwnFieldProps {}
 @observer
 export class Field extends React.Component<FieldProps> {
   static defaultProps = {
-    isEqual: (newValue: any, oldValue: any) =>
-      newValue === oldValue || (isEmpty(newValue) && isEmpty(oldValue)),
+    isEqual: (newValue: any, oldValue: any) => newValue === oldValue || (isEmpty(newValue) && isEmpty(oldValue)),
     persist: false,
   };
 
@@ -128,7 +126,7 @@ export class Field extends React.Component<FieldProps> {
   //registers Field in FormController
   constructor(props: FieldProps) {
     super(props);
-    this.props.controller.registerField(this);
+    this.props.controller.registerField(this, this.props);
   }
 
   //unregisters Field in FormController

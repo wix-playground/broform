@@ -3,6 +3,7 @@ export {
   FieldAdapter,
   AdapterProps,
   AdapterMetaInfo,
+  EqualityFunction,
   InjectedFieldProps,
   FieldProps,
   Field,
