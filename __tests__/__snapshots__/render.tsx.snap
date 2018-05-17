@@ -1,36 +1,88 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`render form 1`] = `
+exports[`render 1`] = `
 <form
   data-hook="test-form"
   noValidate={true}
   onSubmit={[Function]}
 >
-  <div>
+  <div
+    data-hook="batman"
+  >
     <input
-      data-hook="input"
+      data-hook="input-batman"
       name="batman"
       onBlur={[Function]}
       onChange={[Function]}
       onFocus={[Function]}
       value=""
     />
+    <div
+      data-hook="meta-info"
+    >
+      <span
+        data-hook="meta_errors"
+      />
+      <span
+        data-hook="meta_isActive"
+      />
+      <span
+        data-hook="meta_isDirty"
+      />
+      <span
+        data-hook="meta_isTouched"
+      />
+      <span
+        data-hook="meta_isValidating"
+      />
+      <span
+        data-hook="meta_isInitialized"
+      >
+        true
+      </span>
+    </div>
     <span
-      data-hook="validate"
+      data-hook="onFocus"
       onClick={[Function]}
     />
   </div>
-  <div>
+  <div
+    data-hook="robin"
+  >
     <input
-      data-hook="input"
+      data-hook="input-robin"
       name="robin"
       onBlur={[Function]}
       onChange={[Function]}
       onFocus={[Function]}
       value=""
     />
+    <div
+      data-hook="meta-info"
+    >
+      <span
+        data-hook="meta_errors"
+      />
+      <span
+        data-hook="meta_isActive"
+      />
+      <span
+        data-hook="meta_isDirty"
+      />
+      <span
+        data-hook="meta_isTouched"
+      />
+      <span
+        data-hook="meta_isValidating"
+      />
+      <span
+        data-hook="meta_isInitialized"
+      >
+        true
+      </span>
+    </div>
     <span
-      data-hook="validate"
+      data-hook="onFocus"
       onClick={[Function]}
     />
   </div>

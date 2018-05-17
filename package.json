@@ -94,7 +94,8 @@
     "tslint-config-prettier": "^1.10.0",
     "typescript": "^2.8.3",
     "webpack": "^4.6.0",
-    "webpack-cli": "^2.0.15"
+    "webpack-cli": "^2.0.15",
+    "wix-eventually": "^2.2.0"
   },
   "dependencies": {
     "flat": "^4.0.0",

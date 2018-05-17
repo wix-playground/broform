@@ -297,8 +297,8 @@ export class FormController {
     this.updateErrorOnEveryFieldUsing({});
   };
 
-  constructor(props: FormControllerOptions) {
-    this.setOptions(props);
+  constructor(options: FormControllerOptions) {
+    this.setOptions(options);
   }
 
   //form FormAPI, which will be passed to child render function or could be retrieved with getApi prop callback
@@ -428,6 +428,7 @@ export class FormController {
       this.runFieldLevelValidations(),
       this.runFormLevelValidations(),
     ]);
+
     this.setErrors(merge(fieldValidationErrors, formValidationErrors));
     this.updateErrorOnEveryFieldUsing(this.errors);
 

@@ -12,9 +12,7 @@ export interface TestFormProps {
 export class TestForm extends React.Component<TestFormProps> {
   render() {
     const {controller, formProps} = this.props;
-    const props = controller
-      ? controller
-      : formProps;
+    const props = controller ? {controller} : formProps;
 
     return (
       <Form {...props}>
