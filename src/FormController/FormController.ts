@@ -19,7 +19,11 @@ export type FieldValidationError = string | string[] | null;
 export interface FormControllerOptions {
   initialValues?: FormValues;
   onValidate?: (values: any) => any;
-  onSubmit?: (errors: FormValidationErrors, values: FormValues, submitEvent?: React.FormEvent<any>) => void;
+  onSubmit?: (
+    errors: FormValidationErrors,
+    values: FormValues,
+    submitEvent?: React.FormEvent<any>,
+  ) => void;
   formatter?: (values: FormValues) => FormValues;
 }
 
@@ -66,7 +70,17 @@ export interface FormAPI {
 
 export class FormController {
   //Form options
-  protected readonly options: FormControllerOptions;
+  @observable protected options: FormControllerOptions;
+  @action setOptions = (options: FormControllerOptions) => (this.options = options);
+
+  //set current form values as initialValues
+  @action
+  protected updateInitialValues = () => {
+    this.options.initialValues = this.values;
+    this.fields.forEach((field: FormField) => {
+      field.meta.initialValue = get(this.options.initialValues, field.props.name);
+    });
+  };
 
   //get all field level validations
   @computed
@@ -115,7 +129,9 @@ export class FormController {
   };
 
   //executes all field level validators passed to Fields as a `validate` prop and returns errors
-  protected runFieldLevelValidations = async (): Promise<({[name: string]: FieldValidationError}) | {}> => {
+  protected runFieldLevelValidations = async (): Promise<
+    ({[name: string]: FieldValidationError}) | {}
+  > => {
     let pendingValidationCount = Object.keys(this.fieldValidations).length;
 
     if (pendingValidationCount === 0) {
@@ -191,7 +207,9 @@ export class FormController {
     const field = this.fields.get(name);
 
     const initialValue =
-      get(this.options.initialValues, name) !== undefined ? get(this.options.initialValues, name) : props.defaultValue;
+      get(this.options.initialValues, name) !== undefined
+        ? get(this.options.initialValues, name)
+        : props.defaultValue;
 
     merge(field, {
       instance: fieldInstance,
@@ -231,7 +249,10 @@ export class FormController {
   };
 
   @action
-  protected updateErrorOnSingleField = (fieldName: string, errors: {[name: string]: FieldValidationError}) => {
+  protected updateErrorOnSingleField = (
+    fieldName: string,
+    errors: {[name: string]: FieldValidationError},
+  ) => {
     this.fields.get(fieldName).errors = errors[fieldName] ? errors[fieldName] : null;
   };
 
@@ -277,7 +298,7 @@ export class FormController {
   };
 
   constructor(props: FormControllerOptions) {
-    this.options = props;
+    this.setOptions(props);
   }
 
   //form FormAPI, which will be passed to child render function or could be retrieved with getApi prop callback
@@ -428,6 +449,8 @@ export class FormController {
 
     try {
       await this.options.onSubmit(this.errors, this.formattedValues, submitEvent);
+
+      this.updateInitialValues();
     } finally {
       this.setIsSubmitting(false);
     }
