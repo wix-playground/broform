@@ -2,7 +2,6 @@ import * as React from 'react';
 import {toJS, computed} from 'mobx';
 import {inject, observer} from 'mobx-react';
 import {FormController, FormField} from '../FormController';
-const isEmpty = require('lodash/isEmpty');
 
 export type ValidationFunction =
   | ((value: any, values: any) => string[] | null)
@@ -64,7 +63,7 @@ export interface FieldProps extends InjectedFieldProps, OwnFieldProps {}
 @observer
 export class Field extends React.Component<FieldProps> {
   static defaultProps = {
-    isEqual: (newValue: any, oldValue: any) => newValue === oldValue || (isEmpty(newValue) && isEmpty(oldValue)),
+    isEqual: (newValue: any, oldValue: any) => newValue === oldValue,
     persist: false,
   };
 
