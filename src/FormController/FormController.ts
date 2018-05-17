@@ -165,13 +165,13 @@ export class FormController {
     this.fields.set(name, {
       instance: null,
       errors: null,
-      value: null,
-      props: null,
+      value: undefined,
+      props: undefined,
       isRegistered: false,
       meta: {
         isEqual: (a: any, b: any) => a === b,
         custom: {},
-        initialValue: null,
+        initialValue: undefined,
         isTouched: false,
         isActive: false,
         isValidating: false,
