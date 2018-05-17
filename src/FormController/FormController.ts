@@ -4,10 +4,7 @@ import {flatten} from 'flat';
 import {Field, ValidationFunction, EqualityFunction, FieldProps} from '../Field';
 const set = require('lodash/set');
 const get = require('lodash/get');
-const isEmpty = require('lodash/isEmpty');
 const merge = require('lodash/merge');
-const size = require('lodash/size');
-const isUndefined = require('lodash/isUndefined');
 
 export type FormValidationErrors = {
   [key: string]: string[] | FormValidationErrors;
@@ -43,6 +40,7 @@ export interface FormFieldMeta {
   isActive: boolean;
   isValidating: boolean;
   isDirty: boolean;
+  isInitialized: boolean;
 }
 
 export interface FormAPI {
@@ -118,7 +116,7 @@ export class FormController {
 
   //executes all field level validators passed to Fields as a `validate` prop and returns errors
   protected runFieldLevelValidations = async (): Promise<({[name: string]: FieldValidationError}) | {}> => {
-    let pendingValidationCount = size(this.fieldValidations);
+    let pendingValidationCount = Object.keys(this.fieldValidations).length;
 
     if (pendingValidationCount === 0) {
       return {};
@@ -150,7 +148,7 @@ export class FormController {
 
   @action
   protected setErrors = (errors: FormValidationErrors) => {
-    this.errors = !isEmpty(errors) ? errors : null;
+    this.errors = Object.keys(errors).length ? errors : null;
   };
   //All validation errors
   @observable protected errors: FormValidationErrors;
@@ -177,6 +175,7 @@ export class FormController {
         isTouched: false,
         isActive: false,
         isValidating: false,
+        isInitialized: false,
         get isDirty() {
           const field = self.fields.get(name);
           return !field.meta.isEqual(field.value, field.meta.initialValue);
@@ -191,9 +190,8 @@ export class FormController {
     const {name, isEqual} = props;
     const field = this.fields.get(name);
 
-    const initialValue = !isUndefined(get(this.options.initialValues, name))
-      ? get(this.options.initialValues, name)
-      : props.defaultValue;
+    const initialValue =
+      get(this.options.initialValues, name) !== undefined ? get(this.options.initialValues, name) : props.defaultValue;
 
     merge(field, {
       instance: fieldInstance,
@@ -208,6 +206,7 @@ export class FormController {
         isTouched: false,
         isActive: false,
         isValidating: false,
+        isInitialized: true,
       },
     });
   };
@@ -241,8 +240,8 @@ export class FormController {
   protected updateErrorOnEveryFieldUsing = (formValidationErrors: FormValidationErrors) => {
     const fieldErrors: {[key: string]: string[] | null} = formValidationErrors
       ? flatten(formValidationErrors, {
-        safe: true,
-      })
+          safe: true,
+        })
       : null;
 
     this.fields.forEach((field) => {
@@ -266,7 +265,7 @@ export class FormController {
     this.fields.forEach((field: FormField, name: string) => {
       const value = get(values, name);
 
-      if (isUndefined(value) && !isUndefined(field.meta.initialValue)) {
+      if (value === undefined && field.meta.initialValue !== undefined) {
         field.value = field.meta.initialValue;
       } else {
         field.value = value;

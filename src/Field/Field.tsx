@@ -17,6 +17,7 @@ export interface AdapterMetaInfo {
   isActive: boolean;
   isValidating: boolean;
   custom: {[key: string]: any};
+  isInitialized: boolean;
   form: {
     isValidating: boolean;
     isValid: boolean;
@@ -76,11 +77,12 @@ export class Field extends React.Component<FieldProps> {
 
     return {
       custom: meta.custom,
-      errors: !isEmpty(adapterErrors) ? adapterErrors : null,
+      errors: adapterErrors,
       isActive: meta.isActive,
       isDirty: meta.isDirty,
       isTouched: meta.isTouched,
       isValidating: meta.isValidating,
+      isInitialized: meta.isInitialized,
       form: {
         isValidating: controller.isValidating,
         isValid: controller.isValid,
@@ -99,6 +101,7 @@ export class Field extends React.Component<FieldProps> {
     });
   }
 
+  @computed
   get field(): FormField {
     return this.props.controller.fields.get(this.props.name);
   }
@@ -124,8 +127,7 @@ export class Field extends React.Component<FieldProps> {
   };
 
   //registers Field in FormController
-  constructor(props: FieldProps) {
-    super(props);
+  componentDidMount() {
     this.props.controller.registerField(this, this.props);
   }
 
@@ -137,6 +139,10 @@ export class Field extends React.Component<FieldProps> {
   //render the adapter passed as `adapter` prop  with optional `adapterProps` prop,
   //or as render children function, broform prop is injected either way, but `adapterProps` are not passed in second case.
   render() {
+    if (!this.field) {
+      return null;
+    }
+
     const {controller, name} = this.props;
 
     const injectedAdapterProps: AdapterProps = {

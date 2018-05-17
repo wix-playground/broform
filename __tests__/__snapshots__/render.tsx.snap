@@ -1,0 +1,43 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`render form 1`] = `
+<form
+  data-hook="test-form"
+  noValidate={true}
+  onSubmit={[Function]}
+>
+  <div>
+    <input
+      data-hook="input"
+      name="batman"
+      onBlur={[Function]}
+      onChange={[Function]}
+      onFocus={[Function]}
+      value=""
+    />
+    <span
+      data-hook="validate"
+      onClick={[Function]}
+    />
+  </div>
+  <div>
+    <input
+      data-hook="input"
+      name="robin"
+      onBlur={[Function]}
+      onChange={[Function]}
+      onFocus={[Function]}
+      value=""
+    />
+    <span
+      data-hook="validate"
+      onClick={[Function]}
+    />
+  </div>
+  <button
+    type="submit"
+  >
+    Submit
+  </button>
+</form>
+`;
