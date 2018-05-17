@@ -450,7 +450,9 @@ export class FormController {
     try {
       await this.options.onSubmit(this.errors, this.formattedValues, submitEvent);
 
-      this.updateInitialValues();
+      if (this.errors === null) {
+        this.updateInitialValues();
+      }
     } finally {
       this.setIsSubmitting(false);
     }
