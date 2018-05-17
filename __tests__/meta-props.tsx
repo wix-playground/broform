@@ -1,11 +1,11 @@
 import * as React from 'react';
-import {mount} from 'enzyme';
+import {mount, ReactWrapper} from 'enzyme';
 import {FormController} from '../src/FormController';
 import {TestForm} from '../test/components/TestForm';
 import {AdapterMetaInfo} from '../src/Field';
 // import * as eventually from 'wix-eventually';
 
-test('meta props', async () => {
+describe('meta props', async () => {
   // const checkFor = async (checkFunction: () => boolean) => {
   //   await eventually(() => {
   //     wrapper.update();
@@ -16,37 +16,66 @@ test('meta props', async () => {
   //     }
   //   });
   // };
+  let wrapper: ReactWrapper;
 
+  const inputSelector = `[data-hook="input-batman"]`;
   const getMeta = (prop: keyof AdapterMetaInfo) => {
     return wrapper.find(`[data-hook="batman"] [data-hook="meta_${prop}"]`).text();
   };
 
-  const formController = new FormController({
-    initialValues: {
-      batman: 'bat',
-    },
+  it('isInitialized', () => {
+    const formController = new FormController({});
+    expect(formController.API.getFieldMeta('batman').isInitialized).toBe(false);
+    wrapper = mount(<TestForm controller={formController} />);
+    expect(formController.API.getFieldMeta('batman').isInitialized).toBe(true);
   });
 
-  expect(formController.API.getFieldMeta('batman').isInitialized).toBe(false);
+  it('isActive', () => {
+    const formController = new FormController({});
+    wrapper = mount(<TestForm controller={formController} />);
+    const input = wrapper.find(inputSelector);
 
-  const wrapper = mount(<TestForm controller={formController} />);
-  const input = wrapper.find(`[data-hook="input-batman"]`);
+    expect(getMeta('isActive')).not.toBe('true');
 
-  expect(getMeta('isInitialized')).toBe('true');
+    input.simulate('focus');
+    wrapper.update();
 
-  expect(getMeta('isActive')).not.toBe('true');
-  expect(getMeta('isTouched')).not.toBe('true');
+    expect(getMeta('isActive')).toBe('true');
 
-  input.simulate('focus');
-  wrapper.update();
+    input.simulate('blur');
+    wrapper.update();
 
-  expect(getMeta('isActive')).toBe('true');
-  expect(getMeta('isTouched')).toBe('true');
+    expect(getMeta('isActive')).not.toBe('true');
+  });
 
-  expect(getMeta('isDirty')).not.toBe('true');
+  it('isTouched', () => {
+    const formController = new FormController({});
+    wrapper = mount(<TestForm controller={formController} />);
+    const input = wrapper.find(inputSelector);
 
-  input.simulate('change', {target: {value: 'batman'}});
-  wrapper.update();
+    expect(getMeta('isTouched')).not.toBe('true');
 
-  expect(getMeta('isDirty')).toBe('true');
+    input.simulate('focus');
+    wrapper.update();
+
+    expect(getMeta('isTouched')).toBe('true');
+
+    input.simulate('blur');
+    wrapper.update();
+
+    expect(getMeta('isTouched')).toBe('true');
+  });
+
+  it('isDirty', () => {
+    const formController = new FormController({});
+    wrapper = mount(<TestForm controller={formController} />);
+    const input = wrapper.find(inputSelector);
+
+    expect(getMeta('isDirty')).not.toBe('true');
+
+    input.simulate('change', {target: {value: 'batman'}});
+    wrapper.update();
+
+    expect(getMeta('isDirty')).toBe('true');
+  });
 });
