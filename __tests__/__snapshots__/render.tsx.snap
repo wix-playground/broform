@@ -36,9 +36,28 @@ exports[`render 1`] = `
         data-hook="meta_isValidating"
       />
       <span
-        data-hook="meta_isInitialized"
+        data-hook="meta_isRegistered"
       >
         true
+      </span>
+      <span
+        data-hook="meta_isValidating"
+      />
+      <span
+        data-hook="meta_isValid"
+      >
+        true
+      </span>
+      <span
+        data-hook="meta_isDirty"
+      />
+      <span
+        data-hook="meta_isTouched"
+      />
+      <span
+        data-hook="meta_submitCount"
+      >
+        0
       </span>
     </div>
     <span
@@ -76,9 +95,28 @@ exports[`render 1`] = `
         data-hook="meta_isValidating"
       />
       <span
-        data-hook="meta_isInitialized"
+        data-hook="meta_isRegistered"
       >
         true
+      </span>
+      <span
+        data-hook="meta_isValidating"
+      />
+      <span
+        data-hook="meta_isValid"
+      >
+        true
+      </span>
+      <span
+        data-hook="meta_isDirty"
+      />
+      <span
+        data-hook="meta_isTouched"
+      />
+      <span
+        data-hook="meta_submitCount"
+      >
+        0
       </span>
     </div>
     <span

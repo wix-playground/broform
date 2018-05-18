@@ -2,6 +2,7 @@ import * as React from 'react';
 import {ChangeEvent} from 'react';
 import {AdapterProps} from '../../src/Field';
 import {isArray, isObject, isNil, isEmpty} from 'lodash';
+import {Meta} from './Meta';
 
 export interface InputAdapterProps extends AdapterProps {}
 
@@ -47,19 +48,7 @@ export class InputAdapter extends React.Component<InputAdapterProps> {
           ''
         )}
 
-        <div data-hook="meta-info">
-          {Object.keys(meta).map((key) => {
-            if (!isObject(meta[key])) {
-              return (
-                <span key={key} data-hook={`meta_${key}`}>
-                  {meta[key] && meta[key].toString()}
-                </span>
-              );
-            } else {
-              return null;
-            }
-          })}
-        </div>
+        <Meta {...meta} />
 
         <span data-hook="onFocus" onClick={validate} />
       </div>

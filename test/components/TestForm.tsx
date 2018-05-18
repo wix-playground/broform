@@ -10,6 +10,9 @@ export interface TestFormProps {
 }
 
 export class TestForm extends React.Component<TestFormProps> {
+  static FIELD_ONE_NAME = 'batman';
+  static FIELD_TWO_NAME = 'robin';
+
   render() {
     const {controller, formProps} = this.props;
     const props = controller ? {controller} : formProps;
@@ -21,8 +24,8 @@ export class TestForm extends React.Component<TestFormProps> {
 
           return (
             <form onSubmit={submit} noValidate data-hook="test-form">
-              <Field name="batman" adapter={InputAdapter} />
-              <Field name="robin" adapter={InputAdapter} />
+              <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter} />
+              <Field name={TestForm.FIELD_TWO_NAME} adapter={InputAdapter} />
               <button type="submit">Submit</button>
             </form>
           );

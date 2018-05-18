@@ -19,7 +19,7 @@ export interface AdapterMetaInfo {
   isActive: boolean;
   isValidating: boolean;
   custom: {[key: string]: any};
-  isInitialized: boolean;
+  isRegistered: boolean;
   form: {
     isValidating: boolean;
     isValid: boolean;
@@ -75,16 +75,18 @@ export class Field extends React.Component<FieldProps> {
   protected get meta(): AdapterMetaInfo {
     const {controller} = this.props;
     const {meta, errors} = this.field;
+
     const adapterErrors = toJS(errors);
+    const custom = toJS(meta.custom);
 
     return {
-      custom: meta.custom,
+      custom,
       errors: adapterErrors,
       isActive: meta.isActive,
       isDirty: meta.isDirty,
       isTouched: meta.isTouched,
       isValidating: meta.isValidating,
-      isInitialized: meta.isInitialized,
+      isRegistered: meta.isRegistered,
       form: {
         isValidating: controller.isValidating,
         isValid: controller.isValid,

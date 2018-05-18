@@ -33,7 +33,6 @@ export interface FormField {
   meta: FormFieldMeta;
   props: null | FieldProps;
   value: any;
-  isRegistered: boolean;
 }
 
 export interface FormFieldMeta {
@@ -44,7 +43,7 @@ export interface FormFieldMeta {
   isActive: boolean;
   isValidating: boolean;
   isDirty: boolean;
-  isInitialized: boolean;
+  isRegistered: boolean;
 }
 
 export interface FormAPI {
@@ -183,15 +182,14 @@ export class FormController {
       errors: null,
       value: undefined,
       props: undefined,
-      isRegistered: false,
       meta: {
         isEqual: (a: any, b: any) => a === b,
-        custom: {},
+        custom: observable.map(),
         initialValue: undefined,
         isTouched: false,
         isActive: false,
         isValidating: false,
-        isInitialized: false,
+        isRegistered: false,
         get isDirty() {
           const field = self.fields.get(name);
           return !field.meta.isEqual(field.value, field.meta.initialValue);
@@ -213,18 +211,12 @@ export class FormController {
 
     merge(field, {
       instance: fieldInstance,
-      errors: null,
       props,
       value: initialValue,
-      isRegistered: true,
       meta: {
-        custom: {},
         isEqual: isEqual,
         initialValue: initialValue,
-        isTouched: false,
-        isActive: false,
-        isValidating: false,
-        isInitialized: true,
+        isRegistered: true,
       },
     });
   };
@@ -240,7 +232,7 @@ export class FormController {
   //general handler for registering the field upon it's mounting
   registerField = (fieldInstance: Field, props: FieldProps) => {
     const {name} = props;
-    if (this.fields.has(name) && this.fields.get(name).isRegistered) {
+    if (this.fields.has(name) && this.fields.get(name).meta.isRegistered) {
       this.updateFieldAsExisting(fieldInstance, props);
     } else {
       this.createVirtualField(name);
@@ -277,7 +269,7 @@ export class FormController {
 
   protected getFieldMeta = (fieldName: string) => {
     this.createFieldIfDontExist(fieldName);
-    return toJS(this.fields.get(fieldName).meta, {detectCycles: false});
+    return toJS(this.fields.get(fieldName).meta);
   };
 
   //general handler for resetting form to specific state
@@ -388,7 +380,7 @@ export class FormController {
   @action
   setFieldCustomState = (fieldName: string, key: string, value: any) => {
     this.createFieldIfDontExist(fieldName);
-    this.fields.get(fieldName).meta.custom[key] = value;
+    this.fields.get(fieldName).meta.custom.set(key, value);
   };
 
   //changes when user interacts with the the field, usually 'focus' event
@@ -454,7 +446,8 @@ export class FormController {
       if (this.errors === null) {
         this.updateInitialValues();
       }
-    } catch {} finally {
+    } catch {
+    } finally {
       this.setIsSubmitting(false);
     }
   };
