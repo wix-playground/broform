@@ -454,7 +454,7 @@ export class FormController {
       if (this.errors === null) {
         this.updateInitialValues();
       }
-    } finally {
+    } catch {} finally {
       this.setIsSubmitting(false);
     }
   };
