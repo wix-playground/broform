@@ -10,13 +10,13 @@ export const Errors = observer((props: {errors: any}) => {
         errors.map((error) => {
           if (isObject(error)) {
             return (
-              <span key={error.id} data-hook={`error-${error.id}`}>
+              <span key={error.id} data-hook={`error:${error.id}`}>
                 {error.id}
               </span>
             );
           } else {
             return (
-              <span key={error} data-hook={`error-${error}`}>
+              <span key={error} data-hook={`error:${error}`}>
                 {error}
               </span>
             );

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {ChangeEvent} from 'react';
-import {AdapterProps} from '../../src/Field';
+import {AdapterProps} from '../../../src/Field';
 import {isNil} from 'lodash';
 import {Meta} from './Meta';
 import {Errors} from './Errors';

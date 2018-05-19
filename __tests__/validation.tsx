@@ -4,12 +4,14 @@ import {noop} from 'lodash';
 import {FormController} from '../src/FormController';
 import {TestForm} from '../test/components/TestForm';
 import {waitInWrapper} from '../test/helpers/conditions';
+import {getErrorFromWrapper} from '../test/helpers/getters';
 
 describe('Validation', async () => {
   let wrapper: ReactWrapper;
+  const getError = (key: string) => getErrorFromWrapper(wrapper, TestForm.FIELD_ONE_NAME)(key);
   const waitFor = (condition: () => boolean) => waitInWrapper(wrapper)(condition);
 
-  it('', async () => {
+  it('has errors', async () => {
     const controller = new FormController({
       onSubmit: noop,
       onValidate: async (values) => {
@@ -17,7 +19,7 @@ describe('Validation', async () => {
           return {};
         } else {
           return {
-            batman: ['not_batman', {id: 'not_bruce_wayne'}],
+            batman: ['notBatman', {id: 'notBruceWayne'}],
           };
         }
       },
@@ -28,10 +30,7 @@ describe('Validation', async () => {
     wrapper.find(`[data-hook="test-form"]`).simulate('submit', {target: {}});
 
     await waitFor(() => {
-      return (
-        wrapper.find(`[data-hook="error-not_batman"]`).length === 1 &&
-        wrapper.find(`[data-hook="error-not_bruce_wayne"]`).length === 1
-      );
+      return getError('notBatman') === 'notBatman' && getError('notBruceWayne') === 'notBruceWayne';
     });
   });
 });

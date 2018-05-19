@@ -2,41 +2,35 @@ import * as React from 'react';
 import {mount, ReactWrapper} from 'enzyme';
 import {FormController} from '../src/FormController';
 import {TestForm} from '../test/components/TestForm';
-import {getMetaFromWrapper} from '../test/helpers/meta';
+import {getInput, getMetaFromWrapper} from '../test/helpers/getters';
 
 describe('Form meta', async () => {
   let wrapper: ReactWrapper;
 
-  const inputSelector = `[data-hook="input-${TestForm.FIELD_ONE_NAME}"]`;
-  const getMeta = (metaProps: string) => getMetaFromWrapper(wrapper)(metaProps);
+  const getFieldInput = () => getInput(wrapper, TestForm.FIELD_ONE_NAME);
+  const getMeta = (metaProps: string) =>
+    getMetaFromWrapper(wrapper, TestForm.FIELD_ONE_NAME)(metaProps);
 
   it('isTouched', () => {
     const formController = new FormController({});
     wrapper = mount(<TestForm controller={formController} />);
-    const input = wrapper.find(inputSelector);
 
-    expect(getMeta('form:isTouched')).not.toBe('true');
+    expect(getMeta('form:isTouched')).toBe('false');
 
-    input.simulate('focus');
-    wrapper.update();
-
+    getFieldInput().simulate('focus');
     expect(getMeta('form:isTouched')).toBe('true');
 
-    input.simulate('blur');
-    wrapper.update();
-
+    getFieldInput().simulate('blur');
     expect(getMeta('form:isTouched')).toBe('true');
   });
 
   it('isDirty', () => {
     const formController = new FormController({});
     wrapper = mount(<TestForm controller={formController} />);
-    const input = wrapper.find(inputSelector);
 
-    expect(getMeta('form:isDirty')).not.toBe('true');
+    expect(getMeta('form:isDirty')).toBe('false');
 
-    input.simulate('change', {target: {value: 'batman'}});
-    wrapper.update();
+    getFieldInput().simulate('change', {target: {value: 'batman'}});
 
     expect(getMeta('form:isDirty')).toBe('true');
   });
