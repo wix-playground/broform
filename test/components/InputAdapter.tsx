@@ -1,8 +1,9 @@
 import * as React from 'react';
 import {ChangeEvent} from 'react';
 import {AdapterProps} from '../../src/Field';
-import {isArray, isObject, isNil, isEmpty} from 'lodash';
+import {isNil} from 'lodash';
 import {Meta} from './Meta';
+import {Errors} from './Errors';
 
 export interface InputAdapterProps extends AdapterProps {}
 
@@ -25,30 +26,10 @@ export class InputAdapter extends React.Component<InputAdapterProps> {
           onFocus={onFocus}
           onBlur={onBlur}
         />
-        {!isEmpty(errors) ? (
-          <span data-hook="errors">
-            {isArray(errors) &&
-              errors.map((error) => {
-                if (isObject(error)) {
-                  return (
-                    <span key={error.id} data-hook={`error-${error.id}`}>
-                      {error.id}
-                    </span>
-                  );
-                } else {
-                  return (
-                    <span key={error} data-hook={`error-${error}`}>
-                      {error}
-                    </span>
-                  );
-                }
-              })}
-          </span>
-        ) : (
-          ''
-        )}
 
-        <Meta {...meta} />
+        <Errors errors={errors} />
+
+        <Meta meta={meta} />
 
         <span data-hook="onFocus" onClick={validate} />
       </div>

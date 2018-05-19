@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`render 1`] = `
+exports[`Render 1`] = `
 <form
   data-hook="test-form"
   noValidate={true}
@@ -18,44 +18,60 @@ exports[`render 1`] = `
       value=""
     />
     <div
-      data-hook="meta-info"
+      data-hook="meta-props"
     >
       <span
         data-hook="meta_errors"
-      />
+      >
+        null
+      </span>
       <span
         data-hook="meta_isActive"
-      />
+      >
+        false
+      </span>
       <span
         data-hook="meta_isDirty"
-      />
+      >
+        false
+      </span>
       <span
         data-hook="meta_isTouched"
-      />
+      >
+        false
+      </span>
       <span
         data-hook="meta_isValidating"
-      />
+      >
+        false
+      </span>
       <span
         data-hook="meta_isRegistered"
       >
         true
       </span>
       <span
-        data-hook="meta_isValidating"
-      />
+        data-hook="meta_form:isValidating"
+      >
+        false
+      </span>
       <span
-        data-hook="meta_isValid"
+        data-hook="meta_form:isValid"
       >
         true
       </span>
       <span
-        data-hook="meta_isDirty"
-      />
+        data-hook="meta_form:isDirty"
+      >
+        false
+      </span>
       <span
-        data-hook="meta_isTouched"
-      />
+        data-hook="meta_form:isTouched"
+      >
+        false
+      </span>
       <span
-        data-hook="meta_submitCount"
+        data-hook="meta_form:submitCount"
       >
         0
       </span>
@@ -77,44 +93,60 @@ exports[`render 1`] = `
       value=""
     />
     <div
-      data-hook="meta-info"
+      data-hook="meta-props"
     >
       <span
         data-hook="meta_errors"
-      />
+      >
+        null
+      </span>
       <span
         data-hook="meta_isActive"
-      />
+      >
+        false
+      </span>
       <span
         data-hook="meta_isDirty"
-      />
+      >
+        false
+      </span>
       <span
         data-hook="meta_isTouched"
-      />
+      >
+        false
+      </span>
       <span
         data-hook="meta_isValidating"
-      />
+      >
+        false
+      </span>
       <span
         data-hook="meta_isRegistered"
       >
         true
       </span>
       <span
-        data-hook="meta_isValidating"
-      />
+        data-hook="meta_form:isValidating"
+      >
+        false
+      </span>
       <span
-        data-hook="meta_isValid"
+        data-hook="meta_form:isValid"
       >
         true
       </span>
       <span
-        data-hook="meta_isDirty"
-      />
+        data-hook="meta_form:isDirty"
+      >
+        false
+      </span>
       <span
-        data-hook="meta_isTouched"
-      />
+        data-hook="meta_form:isTouched"
+      >
+        false
+      </span>
       <span
-        data-hook="meta_submitCount"
+        data-hook="meta_form:submitCount"
       >
         0
       </span>

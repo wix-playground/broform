@@ -2,33 +2,15 @@ import * as React from 'react';
 import {mount, ReactWrapper} from 'enzyme';
 import {FormController} from '../src/FormController';
 import {TestForm} from '../test/components/TestForm';
-import {AdapterMetaInfo} from '../src/Field';
-import * as eventually from 'wix-eventually';
+import {getMetaFromWrapper} from '../test/helpers/meta';
+import {waitInWrapper} from '../test/helpers/conditions';
 
-describe('meta props', async () => {
-  const waitFor = async (checkFunction: () => boolean) => {
-    await eventually(() => {
-      wrapper.update();
-      if (!checkFunction()) {
-        throw new Error();
-      } else {
-        return true;
-      }
-    });
-  };
+describe('Field meta', async () => {
   let wrapper: ReactWrapper;
 
   const inputSelector = `[data-hook="input-${TestForm.FIELD_ONE_NAME}"]`;
-  const getMeta = (prop: keyof AdapterMetaInfo) => {
-    return wrapper
-      .find(
-        `[data-hook="${
-          TestForm.FIELD_ONE_NAME
-        }"] [data-hook="meta-info"] [data-hook="meta_${prop}"]`,
-      )
-      .at(0)
-      .text();
-  };
+  const waitFor = (condition: () => boolean) => waitInWrapper(wrapper)(condition);
+  const getMeta = (metaProps: string) => getMetaFromWrapper(wrapper)(metaProps);
 
   it('isInitialized', () => {
     const formController = new FormController({});
@@ -86,7 +68,7 @@ describe('meta props', async () => {
     expect(getMeta('isDirty')).toBe('true');
   });
 
-  it.skip('custom', async () => {
+  it('custom', async () => {
     const formController = new FormController({});
 
     expect(formController.API.getFieldMeta(TestForm.FIELD_ONE_NAME).custom).toEqual({});
@@ -98,13 +80,7 @@ describe('meta props', async () => {
     expect(formController.API.getFieldMeta(TestForm.FIELD_ONE_NAME).custom.realName).toBe('Bruce');
 
     await waitFor(() => {
-      return (
-        wrapper.find(
-          `[data-hook="${
-            TestForm.FIELD_ONE_NAME
-          }"] [data-hook="meta-info"] [data-hook="meta_custom"]`,
-        ).length > 0
-      );
+      return getMeta('custom:realName') === 'Bruce';
     });
   });
 });

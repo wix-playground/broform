@@ -4,9 +4,10 @@ import {FormController} from '../src/FormController';
 import {TestForm} from '../test/components/TestForm';
 import toJson from 'enzyme-to-json';
 
-test('render', () => {
+test('Render', () => {
   const formController = new FormController({});
 
   const wrapper = mount(<TestForm controller={formController} />);
+
   expect(toJson(wrapper, {noKey: true, mode: 'deep'})).toMatchSnapshot();
 });

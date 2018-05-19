@@ -36,7 +36,7 @@ export interface FormField {
 }
 
 export interface FormFieldMeta {
-  custom: any;
+  custom: {[key: string]: any};
   isEqual: EqualityFunction;
   initialValue: any;
   isTouched: boolean;
