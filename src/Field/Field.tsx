@@ -7,10 +7,7 @@ export type ValidationFunction =
   | ((value: any, values: any) => string[] | null)
   | ((value: any, values: any) => Promise<string[] | null>);
 
-export type FieldAdapter =
-  | ((adapterProps: AdapterProps) => JSX.Element)
-  | React.ComponentClass<any>
-  | React.SFC<any>;
+export type FieldAdapter = ((adapterProps: AdapterProps) => JSX.Element) | React.ComponentClass<any> | React.SFC<any>;
 
 export interface AdapterMetaInfo {
   errors: string | any[] | null;

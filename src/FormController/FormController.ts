@@ -19,11 +19,7 @@ export type FieldValidationError = string | string[] | null;
 export interface FormControllerOptions {
   initialValues?: FormValues;
   onValidate?: (values: any) => any;
-  onSubmit?: (
-    errors: FormValidationErrors,
-    values: FormValues,
-    submitEvent?: React.FormEvent<any>,
-  ) => void;
+  onSubmit?: (errors: FormValidationErrors, values: FormValues, submitEvent?: React.FormEvent<any>) => void;
   formatter?: (values: FormValues) => FormValues;
 }
 
@@ -128,9 +124,7 @@ export class FormController {
   };
 
   //executes all field level validators passed to Fields as a `validate` prop and returns errors
-  protected runFieldLevelValidations = async (): Promise<
-    ({[name: string]: FieldValidationError}) | {}
-  > => {
+  protected runFieldLevelValidations = async (): Promise<({[name: string]: FieldValidationError}) | {}> => {
     let pendingValidationCount = Object.keys(this.fieldValidations).length;
 
     if (pendingValidationCount === 0) {
@@ -205,17 +199,15 @@ export class FormController {
     const field = this.fields.get(name);
 
     const initialValue =
-      get(this.options.initialValues, name) !== undefined
-        ? get(this.options.initialValues, name)
-        : props.defaultValue;
+      get(this.options.initialValues, name) !== undefined ? get(this.options.initialValues, name) : props.defaultValue;
 
     merge(field, {
       instance: fieldInstance,
       props,
       value: initialValue,
       meta: {
-        isEqual: isEqual,
-        initialValue: initialValue,
+        isEqual,
+        initialValue,
         isRegistered: true,
       },
     });
@@ -241,10 +233,7 @@ export class FormController {
   };
 
   @action
-  protected updateErrorOnSingleField = (
-    fieldName: string,
-    errors: {[name: string]: FieldValidationError},
-  ) => {
+  protected updateErrorOnSingleField = (fieldName: string, errors: {[name: string]: FieldValidationError}) => {
     this.fields.get(fieldName).errors = errors[fieldName] ? errors[fieldName] : null;
   };
 
