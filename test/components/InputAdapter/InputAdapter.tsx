@@ -31,7 +31,7 @@ export class InputAdapter extends React.Component<InputAdapterProps> {
 
         <Meta meta={meta} />
 
-        <span data-hook="onFocus" onClick={validate} />
+        <span data-hook="validate" onClick={validate} />
       </div>
     );
   }

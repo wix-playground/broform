@@ -160,7 +160,7 @@ export class FormController {
     this.errors = Object.keys(errors).length ? errors : null;
   };
   //All validation errors
-  @observable protected errors: FormValidationErrors;
+  @observable protected errors: FormValidationErrors = null;
 
   //validates particular field by calling field level validator passed to Field as a `validate` prop
   protected validateField = async (name: string): Promise<any> => {
@@ -325,8 +325,10 @@ export class FormController {
   fields: Map<string, FormField> = observable.map();
 
   //changed when form validation state changes
-  @observable isValid: boolean = true;
-  @action setIsValid = (state: boolean) => (this.isValid = state);
+  @computed
+  get isValid(): boolean {
+    return this.errors === null;
+  }
 
   //changed when form starts or finishes validating
   @observable isValidating: boolean = false;
@@ -413,7 +415,6 @@ export class FormController {
     this.setErrors(merge(fieldValidationErrors, formValidationErrors));
     this.updateErrorOnEveryFieldUsing(this.errors);
 
-    this.setIsValid(this.errors !== null);
     this.setIsValidating(false);
   };
 
