@@ -20,6 +20,7 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "precommit": "lint-staged",
+    "postcommit": "git update-index --again",
     "prepush": "npm run test",
     "format": "prettier --write '{src,test}/**/*.{ts,tsx,js,json,scss,css}'"
   },
