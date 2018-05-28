@@ -24,8 +24,14 @@ export class TestForm extends React.Component<TestFormProps> {
 
           return (
             <form onSubmit={submit} noValidate data-hook="test-form">
-              <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter} />
-              <Field name={TestForm.FIELD_TWO_NAME} adapter={InputAdapter} />
+              {this.props.children ? (
+                this.props.children
+              ) : (
+                <div>
+                  <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter} />
+                  <Field name={TestForm.FIELD_TWO_NAME} adapter={InputAdapter} />
+                </div>
+              )}
               <button type="submit">Submit</button>
             </form>
           );

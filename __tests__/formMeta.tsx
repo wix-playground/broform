@@ -26,6 +26,7 @@ describe('Form meta', async () => {
         }
       },
     });
+
     wrapper = mount(<TestForm controller={controller} />);
 
     expect(getMeta('form:isValid')).toBe('true');
@@ -65,5 +66,57 @@ describe('Form meta', async () => {
     getFieldInput().simulate('change', {target: {value: 'batman'}});
 
     expect(getMeta('form:isDirty')).toBe('true');
+  });
+
+  it('submitCount', () => {
+    const controller = new FormController({});
+    wrapper = mount(<TestForm controller={controller} />);
+
+    expect(getMeta('form:submitCount')).toBe('0');
+
+    wrapper.find(`[data-hook="test-form"]`).simulate('submit', {target: {}});
+
+    expect(getMeta('form:submitCount')).toBe('1');
+  });
+
+  it('isSubmitting', async () => {
+    const controller = new FormController({
+      onValidate: () => {
+        return Promise.resolve();
+      },
+    });
+
+    wrapper = mount(<TestForm controller={controller} />);
+
+    expect(getMeta('form:isSubmitting')).toBe('false');
+
+    wrapper.find(`[data-hook="test-form"]`).simulate('submit', {target: {}});
+
+    expect(getMeta('form:isSubmitting')).toBe('true');
+
+    await waitFor(() => {
+      return getMeta('form:isSubmitting') === 'false';
+    });
+  });
+
+  it('isValidating', async () => {
+    const controller = new FormController({
+      onSubmit: noop,
+      onValidate: async (values) => {
+        return values.batman === 'batman' ? {} : {batman: ['notBatman']};
+      },
+    });
+
+    wrapper = mount(<TestForm controller={controller} />);
+
+    expect(getMeta('form:isValidating')).toBe('false');
+
+    wrapper.find(`[data-hook="test-form"]`).simulate('submit', {target: {}});
+
+    expect(getMeta('form:isValidating')).toBe('true');
+
+    await waitFor(() => {
+      return getMeta('form:isValidating') === 'false';
+    });
   });
 });

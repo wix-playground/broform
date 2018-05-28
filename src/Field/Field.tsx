@@ -1,29 +1,23 @@
 import * as React from 'react';
 import {toJS, computed} from 'mobx';
 import {inject, observer} from 'mobx-react';
-import {FormController, FormField} from '../FormController';
+import {FormController, FormField, FormMeta} from '../FormController';
 
 export type ValidationFunction =
-  | ((value: any, values: any) => string[] | null)
-  | ((value: any, values: any) => Promise<string[] | null>);
+  | ((value: any, values?: any) => any | null)
+  | ((value: any, values?: any) => Promise<any | null>);
 
 export type FieldAdapter = ((adapterProps: AdapterProps) => JSX.Element) | React.ComponentClass<any> | React.SFC<any>;
 
 export interface AdapterMetaInfo {
-  errors: string | any[] | null;
+  errors: any | null;
   isDirty: boolean;
   isTouched: boolean;
   isActive: boolean;
   isValidating: boolean;
   custom: {[key: string]: any};
   isRegistered: boolean;
-  form: {
-    isValidating: boolean;
-    isValid: boolean;
-    isDirty: boolean;
-    isTouched: boolean;
-    submitCount: number;
-  };
+  form: FormMeta;
 }
 
 export interface AdapterProps {
@@ -40,18 +34,18 @@ export interface AdapterProps {
   };
 }
 
+export type EqualityFunction = (newValue: any, oldValue: any) => boolean;
+
 export interface InjectedFieldProps {
   controller?: FormController;
 }
-
-export type EqualityFunction = (newValue: any, oldValue: any) => boolean;
 
 export interface OwnFieldProps {
   name: string;
   children?: (injectedAdapterProps: AdapterProps) => JSX.Element;
   adapter?: FieldAdapter;
   defaultValue?: any;
-  validation?: ValidationFunction;
+  onValidate?: ValidationFunction;
   isEqual?: EqualityFunction;
   persist?: boolean;
   adapterProps?: any;
@@ -85,6 +79,7 @@ export class Field extends React.Component<FieldProps> {
       isValidating: meta.isValidating,
       isRegistered: meta.isRegistered,
       form: {
+        isSubmitting: controller.isSubmitting,
         isValidating: controller.isValidating,
         isValid: controller.isValid,
         isDirty: controller.isDirty,
@@ -138,7 +133,7 @@ export class Field extends React.Component<FieldProps> {
   }
 
   //render the adapter passed as `adapter` prop  with optional `adapterProps` prop,
-  //or as render children function, broform prop is injected either way, but `adapterProps` are not passed in second case.
+  //or as children render function, broform prop is injected either way, but `adapterProps` are not passed in second case.
   render() {
     if (!this.field) {
       return null;

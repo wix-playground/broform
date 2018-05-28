@@ -4,16 +4,17 @@ import {FormController} from '../src/FormController';
 import {TestForm} from '../test/components/TestForm';
 import {getInput, getMetaFromWrapper} from '../test/helpers/getters';
 import {waitInWrapper} from '../test/helpers/conditions';
+import {Field} from '../src/Field';
+import {InputAdapter} from '../test/components/InputAdapter';
 
 describe('Field meta', async () => {
   let wrapper: ReactWrapper;
 
   const getFieldInput = () => getInput(wrapper, TestForm.FIELD_ONE_NAME);
   const waitFor = (condition: () => boolean) => waitInWrapper(wrapper)(condition);
-  const getMeta = (metaProps: string) =>
-    getMetaFromWrapper(wrapper, TestForm.FIELD_ONE_NAME)(metaProps);
+  const getMeta = (metaProps: string) => getMetaFromWrapper(wrapper, TestForm.FIELD_ONE_NAME)(metaProps);
 
-  it('isInitialized', () => {
+  it('isRegistered', () => {
     const formController = new FormController({});
     expect(formController.API.getFieldMeta(TestForm.FIELD_ONE_NAME).isRegistered).toEqual(false);
     wrapper = mount(<TestForm controller={formController} />);
@@ -70,6 +71,31 @@ describe('Field meta', async () => {
 
     await waitFor(() => {
       return getMeta('custom:realName') === 'Bruce';
+    });
+  });
+
+  it('isValidating', async () => {
+    const formController = new FormController({});
+    wrapper = mount(
+      <TestForm controller={formController}>
+        <Field
+          onValidate={async (value) => {
+            return value === 'batman' ? null : 'notBatman';
+          }}
+          name={TestForm.FIELD_ONE_NAME}
+          adapter={InputAdapter}
+        />
+      </TestForm>,
+    );
+
+    expect(getMeta('isValidating')).not.toBe('true');
+
+    wrapper.find(`[data-hook="${TestForm.FIELD_ONE_NAME}"] [data-hook="validate"]`).simulate('click');
+
+    expect(getMeta('isValidating')).toBe('true');
+
+    await waitFor(() => {
+      return getMeta('form:isValidating') === 'false';
     });
   });
 });

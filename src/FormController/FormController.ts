@@ -42,6 +42,15 @@ export interface FormFieldMeta {
   isRegistered: boolean;
 }
 
+export interface FormMeta {
+  isValidating: boolean;
+  isSubmitting: boolean;
+  submitCount: number;
+  isValid: boolean;
+  isDirty: boolean;
+  isTouched: boolean;
+}
+
 export interface FormAPI {
   values: FormValues;
   errors: FormValidationErrors;
@@ -53,14 +62,7 @@ export interface FormAPI {
   setFormCustomState: (key: string, value: any) => void;
   onValidate: () => void;
   getFieldMeta: (fieldName: string) => FormFieldMeta;
-  meta: {
-    isSubmitting: boolean;
-    isValidating: boolean;
-    submitCount: number;
-    isValid: boolean;
-    isDirty: boolean;
-    isTouched: boolean;
-  };
+  meta: FormMeta;
 }
 
 export class FormController {
@@ -82,8 +84,8 @@ export class FormController {
   protected get fieldValidations() {
     const fieldValidations: {[index: string]: ValidationFunction} = {};
     this.fields.forEach((field: FormField, name: string) => {
-      if (field.instance && field.props.validation) {
-        fieldValidations[name] = field.props.validation;
+      if (field.instance && field.props.onValidate) {
+        fieldValidations[name] = field.props.onValidate;
       }
     });
 
@@ -159,7 +161,7 @@ export class FormController {
   protected setErrors = (errors: FormValidationErrors) => {
     this.errors = Object.keys(errors).length ? errors : null;
   };
-  //All validation errors
+  //All onValidate errors
   @observable protected errors: FormValidationErrors = null;
 
   //validates particular field by calling field level validator passed to Field as a `validate` prop
@@ -324,7 +326,7 @@ export class FormController {
   //all registered form fields, new field is being added when Field constructor is called
   fields: Map<string, FormField> = observable.map();
 
-  //changed when form validation state changes
+  //changed when form onValidate state changes
   @computed
   get isValid(): boolean {
     return this.errors === null;
@@ -403,7 +405,7 @@ export class FormController {
     return this.resetToValues({});
   };
 
-  //validates the form by calling form level validation function combined with field level validations
+  //validates the form by calling form level onValidate function combined with field level validations
   validate = async () => {
     this.setIsValidating(true);
 
