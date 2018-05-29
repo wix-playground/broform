@@ -2,16 +2,16 @@ import * as React from 'react';
 import {mount, ReactWrapper} from 'enzyme';
 import {FormController} from '../src/FormController';
 import {TestForm} from '../test/components/TestForm';
-import {getInput, getMetaFromWrapper} from '../test/helpers/getters';
+import {getMetaFromWrapper} from '../test/helpers/getters';
 import {waitInWrapper} from '../test/helpers/conditions';
 import {Field} from '../src/Field';
 import {InputAdapter} from '../test/components/InputAdapter';
 import {createTestFormDriver} from '../test/components/TestForm.driver';
+import {createInputAdapterDriver} from '../test/components/InputAdapter/InputAdapter.driver';
 
 describe('Field meta', async () => {
   let wrapper: ReactWrapper;
 
-  const getFieldInput = () => getInput(wrapper, TestForm.FIELD_ONE_NAME);
   const waitFor = (condition: () => boolean) => waitInWrapper(wrapper)(condition);
   const getMeta = (metaProps: string) => getMetaFromWrapper(wrapper, TestForm.FIELD_ONE_NAME)(metaProps);
 
@@ -25,36 +25,41 @@ describe('Field meta', async () => {
   it('isActive', () => {
     const formController = new FormController({});
     wrapper = mount(<TestForm controller={formController} />);
+    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
     expect(getMeta('isActive')).not.toBe('true');
 
-    getFieldInput().simulate('focus');
+    fieldDriver.when.focus();
     expect(getMeta('isActive')).toBe('true');
 
-    getFieldInput().simulate('blur');
+    fieldDriver.when.blur();
     expect(getMeta('isActive')).not.toBe('true');
   });
 
   it('isTouched', () => {
     const formController = new FormController({});
     wrapper = mount(<TestForm controller={formController} />);
+    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
     expect(getMeta('isTouched')).not.toBe('true');
 
-    getFieldInput().simulate('focus');
+    fieldDriver.when.focus();
     expect(getMeta('isTouched')).toBe('true');
 
-    getFieldInput().simulate('blur');
+    fieldDriver.when.blur();
     expect(getMeta('isTouched')).toBe('true');
   });
 
   it('isDirty', () => {
     const formController = new FormController({});
+
     wrapper = mount(<TestForm controller={formController} />);
+
+    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
     expect(getMeta('isDirty')).not.toBe('true');
 
-    getFieldInput().simulate('change', {target: {value: 'batman'}});
+    fieldDriver.when.change('batman');
 
     expect(getMeta('isDirty')).toBe('true');
   });

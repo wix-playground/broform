@@ -5,7 +5,7 @@ import {Json} from 'enzyme-to-json';
 export const createTestFormDriver = (options: {wrapper: ReactWrapper}) => {
   const {wrapper} = options;
 
-  return {
+  const API = {
     get: {
       values: () => {
         return JSON.parse(wrapper.find('[data-hook="form-values"]').getDOMNode().textContent);
@@ -19,6 +19,16 @@ export const createTestFormDriver = (options: {wrapper: ReactWrapper}) => {
       submit: () => {
         wrapper.find(`[data-hook="test-form"]`).simulate('submit', {target: {}});
       },
+    },
+  };
+
+  return {
+    get: {
+      values: API.get.values,
+      serialized: API.get.serialized,
+    },
+    when: {
+      submit: API.when.submit,
     },
   };
 };

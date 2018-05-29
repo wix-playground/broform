@@ -38,5 +38,15 @@ export const createInputAdapterDriver = (options: {wrapper: ReactWrapper; dataHo
     },
   };
 
-  return API;
+  return {
+    get: {
+      value: API.get.value,
+    },
+    when: {
+      focus: API.when.focus,
+      blur: API.when.blur,
+      validate: API.when.validate,
+      change: API.when.change,
+    },
+  };
 };
