@@ -13,7 +13,3 @@ export const getErrorFromWrapper = (wrapper: ReactWrapper, field: string) => (ke
     .at(0)
     .text();
 };
-
-export const getInput = (wrapper: ReactWrapper, field: string) => {
-  return wrapper.find(`[data-hook="input-${field}"]`) as ReactWrapper;
-};

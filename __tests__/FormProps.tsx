@@ -1,15 +1,13 @@
 import * as React from 'react';
 import {mount, ReactWrapper} from 'enzyme';
 import {TestForm} from '../test/components/TestForm';
-import {getInput} from '../test/helpers/getters';
 import {InputAdapter} from '../test/components/InputAdapter';
 import {Field} from '../src/Field';
 import {createTestFormDriver} from '../test/components/TestForm.driver';
+import {createInputAdapterDriver} from '../test/components/InputAdapter/InputAdapter.driver';
 
 describe('Form props', async () => {
   let wrapper: ReactWrapper;
-
-  const getFieldInput = () => getInput(wrapper, TestForm.FIELD_ONE_NAME);
 
   it('initialValues', async () => {
     wrapper = mount(
@@ -19,8 +17,9 @@ describe('Form props', async () => {
         }}
       />,
     );
+    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
-    expect((getFieldInput().getDOMNode() as HTMLInputElement).value).toBe('John Snow');
+    expect(fieldDriver.get.value()).toBe('John Snow');
   });
 
   it('formatter', async () => {
@@ -43,10 +42,11 @@ describe('Form props', async () => {
     );
 
     const formDriver = createTestFormDriver({wrapper});
+    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
     expect(formDriver.get.values()[TestForm.FIELD_ONE_NAME]).toBe('John Snow:formatted');
 
-    getFieldInput().simulate('change', {target: {value: 'Tyrion Lannister'}});
+    fieldDriver.when.change('Tyrion Lannister');
 
     expect(formDriver.get.values()[TestForm.FIELD_ONE_NAME]).toBe('Tyrion Lannister:formatted');
 
