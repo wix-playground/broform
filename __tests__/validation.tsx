@@ -5,6 +5,7 @@ import {FormController} from '../src/FormController';
 import {TestForm} from '../test/components/TestForm';
 import {waitInWrapper} from '../test/helpers/conditions';
 import {getErrorFromWrapper} from '../test/helpers/getters';
+import {createTestFormDriver} from '../test/components/TestForm.driver';
 
 describe('Validation', async () => {
   let wrapper: ReactWrapper;
@@ -27,7 +28,9 @@ describe('Validation', async () => {
 
     wrapper = mount(<TestForm controller={controller} />);
 
-    wrapper.find(`[data-hook="test-form"]`).simulate('submit', {target: {}});
+    const formDriver = createTestFormDriver({wrapper});
+
+    formDriver.when.submit();
 
     await waitFor(() => {
       return getError('notBatman') === 'notBatman' && getError('notBruceWayne') === 'notBruceWayne';

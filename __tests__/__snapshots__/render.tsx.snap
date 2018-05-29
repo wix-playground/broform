@@ -168,6 +168,11 @@ exports[`Render 1`] = `
       />
     </div>
   </div>
+  <div
+    data-hook="form-values"
+  >
+    {}
+  </div>
   <button
     type="submit"
   >

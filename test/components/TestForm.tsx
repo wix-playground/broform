@@ -1,12 +1,11 @@
 import * as React from 'react';
 import {Field} from '../../src/Field';
-import {Form, FormProps} from '../../src/Form';
-import {FormAPI} from '../../src/FormController';
+import {Form} from '../../src/Form';
+import {FormAPI, FormControllerOptions} from '../../src/FormController';
 import {InputAdapter} from './InputAdapter';
 
-export interface TestFormProps {
+export interface TestFormProps extends FormControllerOptions {
   controller?: any;
-  formProps?: FormProps;
 }
 
 export class TestForm extends React.Component<TestFormProps> {
@@ -14,13 +13,13 @@ export class TestForm extends React.Component<TestFormProps> {
   static FIELD_TWO_NAME = 'robin';
 
   render() {
-    const {controller, formProps} = this.props;
+    const {controller, ...formProps} = this.props;
     const props = controller ? {controller} : formProps;
 
     return (
       <Form {...props}>
         {(formApi: FormAPI) => {
-          const {submit} = formApi;
+          const {submit, values} = formApi;
 
           return (
             <form onSubmit={submit} noValidate data-hook="test-form">
@@ -32,6 +31,9 @@ export class TestForm extends React.Component<TestFormProps> {
                   <Field name={TestForm.FIELD_TWO_NAME} adapter={InputAdapter} />
                 </div>
               )}
+
+              <div data-hook="form-values">{JSON.stringify(values)}</div>
+
               <button type="submit">Submit</button>
             </form>
           );

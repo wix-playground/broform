@@ -6,6 +6,7 @@ import {getInput, getMetaFromWrapper} from '../test/helpers/getters';
 import {waitInWrapper} from '../test/helpers/conditions';
 import {Field} from '../src/Field';
 import {InputAdapter} from '../test/components/InputAdapter';
+import {createTestFormDriver} from '../test/components/TestForm.driver';
 
 describe('Field meta', async () => {
   let wrapper: ReactWrapper;
@@ -88,9 +89,11 @@ describe('Field meta', async () => {
       </TestForm>,
     );
 
+    const formDriver = createTestFormDriver({wrapper});
+
     expect(getMeta('isValidating')).not.toBe('true');
 
-    wrapper.find(`[data-hook="${TestForm.FIELD_ONE_NAME}"] [data-hook="validate"]`).simulate('click');
+    formDriver.when.submit();
 
     expect(getMeta('isValidating')).toBe('true');
 
