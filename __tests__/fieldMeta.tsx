@@ -2,7 +2,6 @@ import * as React from 'react';
 import {mount, ReactWrapper} from 'enzyme';
 import {FormController} from '../src/FormController';
 import {TestForm} from '../test/components/TestForm';
-import {getMetaFromWrapper} from '../test/helpers/getters';
 import {waitInWrapper} from '../test/helpers/conditions';
 import {Field} from '../src/Field';
 import {InputAdapter} from '../test/components/InputAdapter';
@@ -13,7 +12,6 @@ describe('Field meta', async () => {
   let wrapper: ReactWrapper;
 
   const waitFor = (condition: () => boolean) => waitInWrapper(wrapper)(condition);
-  const getMeta = (metaProps: string) => getMetaFromWrapper(wrapper, TestForm.FIELD_ONE_NAME)(metaProps);
 
   it('isRegistered', () => {
     const formController = new FormController({});
@@ -27,13 +25,13 @@ describe('Field meta', async () => {
     wrapper = mount(<TestForm controller={formController} />);
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
-    expect(getMeta('isActive')).not.toBe('true');
+    expect(fieldDriver.get.meta('isActive')).not.toBe('true');
 
     fieldDriver.when.focus();
-    expect(getMeta('isActive')).toBe('true');
+    expect(fieldDriver.get.meta('isActive')).toBe('true');
 
     fieldDriver.when.blur();
-    expect(getMeta('isActive')).not.toBe('true');
+    expect(fieldDriver.get.meta('isActive')).not.toBe('true');
   });
 
   it('isTouched', () => {
@@ -41,13 +39,13 @@ describe('Field meta', async () => {
     wrapper = mount(<TestForm controller={formController} />);
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
-    expect(getMeta('isTouched')).not.toBe('true');
+    expect(fieldDriver.get.meta('isTouched')).not.toBe('true');
 
     fieldDriver.when.focus();
-    expect(getMeta('isTouched')).toBe('true');
+    expect(fieldDriver.get.meta('isTouched')).toBe('true');
 
     fieldDriver.when.blur();
-    expect(getMeta('isTouched')).toBe('true');
+    expect(fieldDriver.get.meta('isTouched')).toBe('true');
   });
 
   it('isDirty', () => {
@@ -57,11 +55,11 @@ describe('Field meta', async () => {
 
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
-    expect(getMeta('isDirty')).not.toBe('true');
+    expect(fieldDriver.get.meta('isDirty')).not.toBe('true');
 
     fieldDriver.when.change('batman');
 
-    expect(getMeta('isDirty')).toBe('true');
+    expect(fieldDriver.get.meta('isDirty')).toBe('true');
   });
 
   it('custom', async () => {
@@ -71,12 +69,14 @@ describe('Field meta', async () => {
 
     wrapper = mount(<TestForm controller={formController} />);
 
+    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
+
     formController.API.setFieldCustomState(TestForm.FIELD_ONE_NAME, 'realName', 'Bruce');
 
     expect(formController.API.getFieldMeta(TestForm.FIELD_ONE_NAME).custom.realName).toBe('Bruce');
 
     await waitFor(() => {
-      return getMeta('custom:realName') === 'Bruce';
+      return fieldDriver.get.meta('custom:realName') === 'Bruce';
     });
   });
 
@@ -95,15 +95,16 @@ describe('Field meta', async () => {
     );
 
     const formDriver = createTestFormDriver({wrapper});
+    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
-    expect(getMeta('isValidating')).not.toBe('true');
+    expect(fieldDriver.get.meta('isValidating')).not.toBe('true');
 
     formDriver.when.submit();
 
-    expect(getMeta('isValidating')).toBe('true');
+    expect(fieldDriver.get.meta('isValidating')).toBe('true');
 
     await waitFor(() => {
-      return getMeta('form:isValidating') === 'false';
+      return fieldDriver.get.meta('form:isValidating') === 'false';
     });
   });
 });

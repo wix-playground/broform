@@ -2,14 +2,13 @@ import * as React from 'react';
 import {mount, ReactWrapper} from 'enzyme';
 import {noop} from 'lodash';
 import {FormController} from '../src/FormController';
+import {createInputAdapterDriver} from '../test/components/InputAdapter/InputAdapter.driver';
 import {TestForm} from '../test/components/TestForm';
 import {waitInWrapper} from '../test/helpers/conditions';
-import {getErrorFromWrapper} from '../test/helpers/getters';
 import {createTestFormDriver} from '../test/components/TestForm.driver';
 
 describe('Validation', async () => {
   let wrapper: ReactWrapper;
-  const getError = (key: string) => getErrorFromWrapper(wrapper, TestForm.FIELD_ONE_NAME)(key);
   const waitFor = (condition: () => boolean) => waitInWrapper(wrapper)(condition);
 
   it('has errors', async () => {
@@ -29,11 +28,12 @@ describe('Validation', async () => {
     wrapper = mount(<TestForm controller={controller} />);
 
     const formDriver = createTestFormDriver({wrapper});
+    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
     formDriver.when.submit();
 
     await waitFor(() => {
-      return getError('notBatman') === 'notBatman' && getError('notBruceWayne') === 'notBruceWayne';
+      return fieldDriver.get.errors('notBatman') === 'notBatman' && fieldDriver.get.errors('notBruceWayne') === 'notBruceWayne';
     });
   });
 });
