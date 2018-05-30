@@ -234,11 +234,6 @@ export class FormController {
     }
   };
 
-  @action
-  protected updateErrorOnSingleField = (fieldName: string, errors: {[name: string]: FieldValidationError}) => {
-    this.fields.get(fieldName).errors = errors[fieldName] ? errors[fieldName] : null;
-  };
-
   //sets errors for all fields
   @action
   protected updateErrorOnEveryFieldUsing = (formValidationErrors: FormValidationErrors) => {

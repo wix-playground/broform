@@ -33,6 +33,7 @@ export const createInputAdapterDriver = (options: {wrapper: ReactWrapper; dataHo
           .simulate('click');
       },
       change: (value: string) => {
+        API.when.focus();
         API.get.input().simulate('change', {target: {value}});
       },
     },

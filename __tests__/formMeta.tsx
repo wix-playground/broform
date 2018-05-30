@@ -1,6 +1,8 @@
 import * as React from 'react';
 import {mount, ReactWrapper} from 'enzyme';
+import {Field} from '../src/Field';
 import {FormController} from '../src/FormController';
+import {InputAdapter} from '../test/components/InputAdapter';
 import {TestForm} from '../test/components/TestForm';
 import {getMetaFromWrapper} from '../test/helpers/getters';
 import {noop} from 'lodash';
@@ -28,7 +30,7 @@ describe('Form meta', async () => {
       },
     });
 
-    wrapper = mount(<TestForm controller={controller} />);
+    wrapper = mount(<TestForm controller={controller}/>);
     const formDriver = createTestFormDriver({wrapper});
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
@@ -49,7 +51,7 @@ describe('Form meta', async () => {
 
   it('isTouched', () => {
     const controller = new FormController({});
-    wrapper = mount(<TestForm controller={controller} />);
+    wrapper = mount(<TestForm controller={controller}/>);
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
     expect(getMeta('form:isTouched')).toBe('false');
@@ -61,21 +63,49 @@ describe('Form meta', async () => {
     expect(getMeta('form:isTouched')).toBe('true');
   });
 
-  it('isDirty', () => {
-    const controller = new FormController({});
-    wrapper = mount(<TestForm controller={controller} />);
-    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
+  describe('isDirty', () => {
+    it('using initial values', () => {
+      wrapper = mount(<TestForm initialValues={{
+        [TestForm.FIELD_ONE_NAME]: '',
+      }}>
+        <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter}/>
+      </TestForm>);
 
-    expect(getMeta('form:isDirty')).toBe('false');
+      const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
-    fieldDriver.when.change('batman');
+      expect(getMeta('form:isDirty')).toBe('false');
 
-    expect(getMeta('form:isDirty')).toBe('true');
+      fieldDriver.when.change('batman');
+
+      expect(getMeta('form:isDirty')).toBe('true');
+
+      fieldDriver.when.change('');
+
+      expect(getMeta('form:isDirty')).toBe('false');
+    });
+
+    it('using initial field default value', () => {
+      wrapper = mount(<TestForm>
+        <Field defaultValue={''} name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter}/>
+      </TestForm>);
+
+      const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
+
+      expect(getMeta('form:isDirty')).toBe('false');
+
+      fieldDriver.when.change('batman');
+
+      expect(getMeta('form:isDirty')).toBe('true');
+
+      fieldDriver.when.change('');
+
+      expect(getMeta('form:isDirty')).toBe('false');
+    });
   });
 
   it('submitCount', () => {
     const controller = new FormController({});
-    wrapper = mount(<TestForm controller={controller} />);
+    wrapper = mount(<TestForm controller={controller}/>);
     const formDriver = createTestFormDriver({wrapper});
 
     expect(getMeta('form:submitCount')).toBe('0');
@@ -91,7 +121,7 @@ describe('Form meta', async () => {
         return Promise.resolve();
       },
     });
-    wrapper = mount(<TestForm controller={controller} />);
+    wrapper = mount(<TestForm controller={controller}/>);
     const formDriver = createTestFormDriver({wrapper});
 
     expect(getMeta('form:isSubmitting')).toBe('false');
@@ -112,7 +142,7 @@ describe('Form meta', async () => {
         return values.batman === 'batman' ? {} : {batman: ['notBatman']};
       },
     });
-    wrapper = mount(<TestForm controller={controller} />);
+    wrapper = mount(<TestForm controller={controller}/>);
     const formDriver = createTestFormDriver({wrapper});
 
     expect(getMeta('form:isValidating')).toBe('false');
