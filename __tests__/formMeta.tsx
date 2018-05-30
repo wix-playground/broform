@@ -136,8 +136,8 @@ describe('Form meta', async () => {
     const wrapper = mount(
       <TestForm
         onSubmit={jest.fn()}
-        onValidate={async (values) => {
-          return values.batman === 'batman' ? {} : {batman: ['notBatman']};
+        onValidate={async () => {
+          return {[TestForm.FIELD_ONE_NAME]: ['notBatman']};
         }}
       />,
     );

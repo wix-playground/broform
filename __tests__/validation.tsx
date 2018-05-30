@@ -10,14 +10,10 @@ describe('Validation', async () => {
   it('has errors', async () => {
     const controller = new FormController({
       onSubmit: jest.fn(),
-      onValidate: async (values) => {
-        if (values.batman === 'batman') {
-          return {};
-        } else {
-          return {
-            batman: ['notBatman', {id: 'notBruceWayne'}],
-          };
-        }
+      onValidate: async () => {
+        return {
+          [TestForm.FIELD_ONE_NAME]: ['notBatman', {id: 'notBruceWayne'}],
+        };
       },
     });
     const wrapper = mount(<TestForm controller={controller} />);

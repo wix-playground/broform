@@ -13,7 +13,7 @@ describe('Field meta', async () => {
     const formController = new FormController({});
     expect(formController.API.getFieldMeta(TestForm.FIELD_ONE_NAME).isRegistered).toEqual(false);
     mount(<TestForm controller={formController} />);
-    expect(formController.API.getFieldMeta('batman').isRegistered).toEqual(true);
+    expect(formController.API.getFieldMeta(TestForm.FIELD_ONE_NAME).isRegistered).toEqual(true);
   });
 
   it('isActive', () => {
@@ -44,7 +44,6 @@ describe('Field meta', async () => {
 
   it('isDirty', () => {
     const wrapper = mount(<TestForm />);
-
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
     expect(fieldDriver.get.meta('isDirty')).not.toBe('true');
@@ -60,28 +59,23 @@ describe('Field meta', async () => {
     expect(formController.API.getFieldMeta(TestForm.FIELD_ONE_NAME).custom).toEqual({});
 
     const wrapper = mount(<TestForm controller={formController} />);
-
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
+    const CUSTOM_KEY = 'CUSTOM_KEY';
+    const CUSTOM_VALUE = 'CUSTOM_VALUE';
 
-    formController.API.setFieldCustomState(TestForm.FIELD_ONE_NAME, 'realName', 'Bruce');
+    formController.API.setFieldCustomState(TestForm.FIELD_ONE_NAME, CUSTOM_KEY, CUSTOM_VALUE);
 
-    expect(formController.API.getFieldMeta(TestForm.FIELD_ONE_NAME).custom.realName).toBe('Bruce');
+    expect(formController.API.getFieldMeta(TestForm.FIELD_ONE_NAME).custom[CUSTOM_KEY]).toBe(CUSTOM_VALUE);
 
     await waitFor(wrapper)(() => {
-      return fieldDriver.get.meta('custom:realName') === 'Bruce';
+      return fieldDriver.get.meta(`custom:${CUSTOM_KEY}`) === CUSTOM_VALUE;
     });
   });
 
   it('isValidating', async () => {
     const wrapper = mount(
       <TestForm>
-        <Field
-          onValidate={async (value) => {
-            return value === 'batman' ? null : 'notBatman';
-          }}
-          name={TestForm.FIELD_ONE_NAME}
-          adapter={InputAdapter}
-        />
+        <Field onValidate={jest.fn()} name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter} />
       </TestForm>,
     );
 

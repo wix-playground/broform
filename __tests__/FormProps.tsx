@@ -49,6 +49,6 @@ describe('Form props', async () => {
 
     formDriver.when.submit();
 
-    expect(onValidate).toBeCalledWith({batman: 'Tyrion Lannister:formatted'});
+    expect(onValidate).toBeCalledWith({[TestForm.FIELD_ONE_NAME]: 'Tyrion Lannister:formatted'});
   });
 });

@@ -10,10 +10,7 @@ import {waitFor} from '../test/helpers/conditions';
 
 describe('Field interactions', async () => {
   it('should keep value if "persist=true"', () => {
-    type StatefulFormState = {
-      hiddenField: boolean;
-    };
-    class StatefulForm extends React.Component<null, StatefulFormState> {
+    class StatefulForm extends React.Component<null, {hiddenField: boolean}> {
       state = {
         hiddenField: false,
       };
@@ -43,8 +40,9 @@ describe('Field interactions', async () => {
     const formDriver = createTestFormDriver({wrapper});
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
     const toggleField = wrapper.find(`[data-hook="toggle-field"]`);
+    const NEW_VALUE = 'batman';
 
-    fieldDriver.when.change('batman');
+    fieldDriver.when.change(NEW_VALUE);
 
     toggleField.simulate('click');
 
@@ -52,14 +50,11 @@ describe('Field interactions', async () => {
 
     toggleField.simulate('click');
 
-    expect(fieldDriver.get.value()).toBe('batman');
+    expect(fieldDriver.get.value()).toBe(NEW_VALUE);
   });
 
   it('should not keep value', () => {
-    type StatefulFormState = {
-      hiddenField: boolean;
-    };
-    class StatefulForm extends React.Component<null, StatefulFormState> {
+    class StatefulForm extends React.Component<null, {hiddenField: boolean}> {
       state = {
         hiddenField: false,
       };
@@ -88,8 +83,9 @@ describe('Field interactions', async () => {
     const wrapper = mount(<StatefulForm />);
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
     const toggleField = wrapper.find(`[data-hook="toggle-field"]`);
+    const NEW_VALUE = 'batman';
 
-    fieldDriver.when.change('batman');
+    fieldDriver.when.change(NEW_VALUE);
 
     toggleField.simulate('click');
     toggleField.simulate('click');

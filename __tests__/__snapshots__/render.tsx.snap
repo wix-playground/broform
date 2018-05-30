@@ -8,11 +8,11 @@ exports[`Render 1`] = `
 >
   <div>
     <div
-      data-hook="batman"
+      data-hook="FIELD_ONE_NAME"
     >
       <input
-        data-hook="input-batman"
-        name="batman"
+        data-hook="input-FIELD_ONE_NAME"
+        name="FIELD_ONE_NAME"
         onBlur={[Function]}
         onChange={[Function]}
         onFocus={[Function]}
@@ -92,11 +92,11 @@ exports[`Render 1`] = `
       />
     </div>
     <div
-      data-hook="robin"
+      data-hook="FIELD_TWO_NAME"
     >
       <input
-        data-hook="input-robin"
-        name="robin"
+        data-hook="input-FIELD_TWO_NAME"
+        name="FIELD_TWO_NAME"
         onBlur={[Function]}
         onChange={[Function]}
         onFocus={[Function]}
