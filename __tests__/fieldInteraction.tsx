@@ -1,43 +1,45 @@
 import * as React from 'react';
-import {mount, ReactWrapper} from 'enzyme';
+import {mount} from 'enzyme';
 import {FormController} from '../src/FormController';
 import {TestForm} from '../test/components/TestForm';
 import {Field} from '../src/Field';
 import {InputAdapter} from '../test/components/InputAdapter';
 import {createInputAdapterDriver} from '../test/components/InputAdapter/InputAdapter.driver';
 import {createTestFormDriver} from '../test/components/TestForm.driver';
-import {waitInWrapper} from '../test/helpers/conditions';
+import {waitFor} from '../test/helpers/conditions';
 
 describe('Field interactions', async () => {
-  const waitFor = (condition: () => boolean) => waitInWrapper(wrapper)(condition);
-  let wrapper: ReactWrapper;
-
   it('should keep value if "persist=true"', () => {
     type StatefulFormState = {
       hiddenField: boolean;
-    }
+    };
     class StatefulForm extends React.Component<null, StatefulFormState> {
       state = {
-        hiddenField: false
+        hiddenField: false,
       };
 
       render() {
         return (
           <TestForm>
             {!this.state.hiddenField && <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter} persist={true} />}
-            <button type="button" data-hook="toggle-field" onClick={() => {
-              this.setState((state) => {
-                return {
-                  hiddenField: !state.hiddenField
-                }
-              })
-            }}>Toggle Field</button>
+            <button
+              type="button"
+              data-hook="toggle-field"
+              onClick={() => {
+                this.setState((state) => {
+                  return {
+                    hiddenField: !state.hiddenField,
+                  };
+                });
+              }}
+            >
+              Toggle Field
+            </button>
           </TestForm>
         );
       }
     }
-    wrapper = mount(<StatefulForm />);
-
+    const wrapper = mount(<StatefulForm />);
     const formDriver = createTestFormDriver({wrapper});
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
     const toggleField = wrapper.find(`[data-hook="toggle-field"]`);
@@ -56,29 +58,34 @@ describe('Field interactions', async () => {
   it('should not keep value', () => {
     type StatefulFormState = {
       hiddenField: boolean;
-    }
+    };
     class StatefulForm extends React.Component<null, StatefulFormState> {
       state = {
-        hiddenField: false
+        hiddenField: false,
       };
 
       render() {
         return (
           <TestForm>
             {!this.state.hiddenField && <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter} />}
-            <button type="button" data-hook="toggle-field" onClick={() => {
-              this.setState((state) => {
-                return {
-                  hiddenField: !state.hiddenField
-                }
-              })
-            }}>Toggle Field</button>
+            <button
+              type="button"
+              data-hook="toggle-field"
+              onClick={() => {
+                this.setState((state) => {
+                  return {
+                    hiddenField: !state.hiddenField,
+                  };
+                });
+              }}
+            >
+              Toggle Field
+            </button>
           </TestForm>
         );
       }
     }
-    wrapper = mount(<StatefulForm />);
-
+    const wrapper = mount(<StatefulForm />);
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
     const toggleField = wrapper.find(`[data-hook="toggle-field"]`);
 
@@ -95,26 +102,26 @@ describe('Field interactions', async () => {
 
     expect(formController.API.getFieldMeta(TestForm.FIELD_ONE_NAME).custom).toEqual({});
 
-    wrapper = mount( <TestForm>
-      <Field
-        name={TestForm.FIELD_ONE_NAME}
-        adapter={InputAdapter}
-        adapterProps={{
-          customState: {
-            customProperty: 'custom value'
-          }
-        }}
-      />
-    </TestForm>);
+    const wrapper = mount(
+      <TestForm>
+        <Field
+          name={TestForm.FIELD_ONE_NAME}
+          adapter={InputAdapter}
+          adapterProps={{
+            customState: {
+              customProperty: 'custom value',
+            },
+          }}
+        />
+      </TestForm>,
+    );
 
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
     fieldDriver.when.setCustomState();
 
-    await waitFor(() => {
+    await waitFor(wrapper)(() => {
       return fieldDriver.get.meta('custom:customProperty') === 'custom value';
     });
   });
-
-
 });

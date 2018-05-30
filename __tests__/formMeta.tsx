@@ -1,19 +1,15 @@
 import * as React from 'react';
-import {mount, ReactWrapper} from 'enzyme';
+import {mount} from 'enzyme';
 import {Field} from '../src/Field';
 import {InputAdapter} from '../test/components/InputAdapter';
 import {TestForm} from '../test/components/TestForm';
-import {waitInWrapper} from '../test/helpers/conditions';
+import {waitFor} from '../test/helpers/conditions';
 import {createInputAdapterDriver} from '../test/components/InputAdapter/InputAdapter.driver';
 import {createTestFormDriver} from '../test/components/TestForm.driver';
 
 describe('Form meta', async () => {
-  let wrapper: ReactWrapper;
-
-  const waitFor = (condition: () => boolean) => waitInWrapper(wrapper)(condition);
-
   it('isValid', async () => {
-    wrapper = mount(
+    const wrapper = mount(
       <TestForm
         onSubmit={jest.fn()}
         onValidate={async (values) => {
@@ -34,19 +30,19 @@ describe('Form meta', async () => {
 
     fieldDriver.when.change('harvy');
     formDriver.when.submit();
-    await waitFor(() => fieldDriver.get.meta('form:isValid') === 'false');
+    await waitFor(wrapper)(() => fieldDriver.get.meta('form:isValid') === 'false');
 
     fieldDriver.when.change('batman');
     formDriver.when.submit();
-    await waitFor(() => fieldDriver.get.meta('form:isValid') === 'true');
+    await waitFor(wrapper)(() => fieldDriver.get.meta('form:isValid') === 'true');
 
     fieldDriver.when.change('joker');
     fieldDriver.when.validate();
-    await waitFor(() => fieldDriver.get.meta('form:isValid') === 'false');
+    await waitFor(wrapper)(() => fieldDriver.get.meta('form:isValid') === 'false');
   });
 
   it('isTouched', () => {
-    wrapper = mount(<TestForm />);
+    const wrapper = mount(<TestForm />);
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
     expect(fieldDriver.get.meta('form:isTouched')).toBe('false');
@@ -60,7 +56,7 @@ describe('Form meta', async () => {
 
   describe('isDirty', () => {
     it('using initial values', () => {
-      wrapper = mount(
+      const wrapper = mount(
         <TestForm
           initialValues={{
             [TestForm.FIELD_ONE_NAME]: '',
@@ -69,7 +65,6 @@ describe('Form meta', async () => {
           <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter} />
         </TestForm>,
       );
-
       const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
       expect(fieldDriver.get.meta('form:isDirty')).toBe('false');
@@ -84,12 +79,11 @@ describe('Form meta', async () => {
     });
 
     it('using initial field default value', () => {
-      wrapper = mount(
+      const wrapper = mount(
         <TestForm>
           <Field defaultValue={''} name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter} />
         </TestForm>,
       );
-
       const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
       expect(fieldDriver.get.meta('form:isDirty')).toBe('false');
@@ -105,7 +99,7 @@ describe('Form meta', async () => {
   });
 
   it('submitCount', () => {
-    wrapper = mount(<TestForm />);
+    const wrapper = mount(<TestForm />);
     const formDriver = createTestFormDriver({wrapper});
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
@@ -117,7 +111,7 @@ describe('Form meta', async () => {
   });
 
   it('isSubmitting', async () => {
-    wrapper = mount(
+    const wrapper = mount(
       <TestForm
         onValidate={() => {
           return Promise.resolve();
@@ -133,13 +127,13 @@ describe('Form meta', async () => {
 
     expect(fieldDriver.get.meta('form:isSubmitting')).toBe('true');
 
-    await waitFor(() => {
+    await waitFor(wrapper)(() => {
       return fieldDriver.get.meta('form:isSubmitting') === 'false';
     });
   });
 
   it('isValidating', async () => {
-    wrapper = mount(
+    const wrapper = mount(
       <TestForm
         onSubmit={jest.fn()}
         onValidate={async (values) => {
@@ -156,7 +150,7 @@ describe('Form meta', async () => {
 
     expect(fieldDriver.get.meta('form:isValidating')).toBe('true');
 
-    await waitFor(() => {
+    await waitFor(wrapper)(() => {
       return fieldDriver.get.meta('form:isValidating') === 'false';
     });
   });

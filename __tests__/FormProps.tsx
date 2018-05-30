@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {mount, ReactWrapper} from 'enzyme';
+import {mount} from 'enzyme';
 import {TestForm} from '../test/components/TestForm';
 import {InputAdapter} from '../test/components/InputAdapter';
 import {Field} from '../src/Field';
@@ -7,10 +7,8 @@ import {createTestFormDriver} from '../test/components/TestForm.driver';
 import {createInputAdapterDriver} from '../test/components/InputAdapter/InputAdapter.driver';
 
 describe('Form props', async () => {
-  let wrapper: ReactWrapper;
-
   it('initialValues', async () => {
-    wrapper = mount(
+    const wrapper = mount(
       <TestForm
         initialValues={{
           [TestForm.FIELD_ONE_NAME]: 'John Snow',
@@ -24,8 +22,7 @@ describe('Form props', async () => {
 
   it('formatter', async () => {
     const onValidate = jest.fn();
-
-    wrapper = mount(
+    const wrapper = mount(
       <TestForm
         initialValues={{
           [TestForm.FIELD_ONE_NAME]: 'John Snow',

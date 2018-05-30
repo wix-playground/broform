@@ -1,7 +1,7 @@
 import {ReactWrapper} from 'enzyme';
 import * as eventually from 'wix-eventually';
 
-export const waitInWrapper = (wrapper: ReactWrapper) => async (checkFunction: () => boolean) => {
+export const waitFor = (wrapper: ReactWrapper) => async (checkFunction: () => boolean) => {
   return eventually(() => {
     wrapper.update();
 

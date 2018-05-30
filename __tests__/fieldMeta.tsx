@@ -1,27 +1,23 @@
 import * as React from 'react';
-import {mount, ReactWrapper} from 'enzyme';
+import {mount} from 'enzyme';
 import {FormController} from '../src/FormController';
 import {TestForm} from '../test/components/TestForm';
-import {waitInWrapper} from '../test/helpers/conditions';
+import {waitFor} from '../test/helpers/conditions';
 import {Field} from '../src/Field';
 import {InputAdapter} from '../test/components/InputAdapter';
 import {createTestFormDriver} from '../test/components/TestForm.driver';
 import {createInputAdapterDriver} from '../test/components/InputAdapter/InputAdapter.driver';
 
 describe('Field meta', async () => {
-  let wrapper: ReactWrapper;
-
-  const waitFor = (condition: () => boolean) => waitInWrapper(wrapper)(condition);
-
   it('isRegistered', () => {
     const formController = new FormController({});
     expect(formController.API.getFieldMeta(TestForm.FIELD_ONE_NAME).isRegistered).toEqual(false);
-    wrapper = mount(<TestForm controller={formController} />);
+    mount(<TestForm controller={formController} />);
     expect(formController.API.getFieldMeta('batman').isRegistered).toEqual(true);
   });
 
   it('isActive', () => {
-    wrapper = mount(<TestForm />);
+    const wrapper = mount(<TestForm />);
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
     expect(fieldDriver.get.meta('isActive')).not.toBe('true');
@@ -34,7 +30,7 @@ describe('Field meta', async () => {
   });
 
   it('isTouched', () => {
-    wrapper = mount(<TestForm />);
+    const wrapper = mount(<TestForm />);
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
     expect(fieldDriver.get.meta('isTouched')).not.toBe('true');
@@ -47,7 +43,7 @@ describe('Field meta', async () => {
   });
 
   it('isDirty', () => {
-    wrapper = mount(<TestForm />);
+    const wrapper = mount(<TestForm />);
 
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
@@ -63,7 +59,7 @@ describe('Field meta', async () => {
 
     expect(formController.API.getFieldMeta(TestForm.FIELD_ONE_NAME).custom).toEqual({});
 
-    wrapper = mount(<TestForm controller={formController} />);
+    const wrapper = mount(<TestForm controller={formController} />);
 
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
@@ -71,13 +67,13 @@ describe('Field meta', async () => {
 
     expect(formController.API.getFieldMeta(TestForm.FIELD_ONE_NAME).custom.realName).toBe('Bruce');
 
-    await waitFor(() => {
+    await waitFor(wrapper)(() => {
       return fieldDriver.get.meta('custom:realName') === 'Bruce';
     });
   });
 
   it('isValidating', async () => {
-    wrapper = mount(
+    const wrapper = mount(
       <TestForm>
         <Field
           onValidate={async (value) => {
@@ -98,7 +94,7 @@ describe('Field meta', async () => {
 
     expect(fieldDriver.get.meta('isValidating')).toBe('true');
 
-    await waitFor(() => {
+    await waitFor(wrapper)(() => {
       return fieldDriver.get.meta('form:isValidating') === 'false';
     });
   });

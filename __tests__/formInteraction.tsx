@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {mount, ReactWrapper} from 'enzyme';
+import {mount} from 'enzyme';
 import {Field} from '../src/Field';
 import {FormController} from '../src/FormController';
 import {InputAdapter} from '../test/components/InputAdapter';
@@ -7,18 +7,17 @@ import {TestForm} from '../test/components/TestForm';
 import {createInputAdapterDriver} from '../test/components/InputAdapter/InputAdapter.driver';
 
 describe('Form interaction', async () => {
-  let wrapper: ReactWrapper;
-
   it('should reset values', async () => {
     const controller = new FormController({
       initialValues: {
-        [TestForm.FIELD_ONE_NAME]: 'batman is cool'
-      }
+        [TestForm.FIELD_ONE_NAME]: 'batman is cool',
+      },
     });
-
-    wrapper = mount(<TestForm controller={controller}>
-      <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter}/>
-    </TestForm>);
+    const wrapper = mount(
+      <TestForm controller={controller}>
+        <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter} />
+      </TestForm>,
+    );
 
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
@@ -39,13 +38,14 @@ describe('Form interaction', async () => {
   it('should clear values', async () => {
     const controller = new FormController({
       initialValues: {
-        [TestForm.FIELD_ONE_NAME]: 'batman is cool'
-      }
+        [TestForm.FIELD_ONE_NAME]: 'batman is cool',
+      },
     });
-
-    wrapper = mount(<TestForm controller={controller}>
-      <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter}/>
-    </TestForm>);
+    const wrapper = mount(
+      <TestForm controller={controller}>
+        <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter} />
+      </TestForm>,
+    );
 
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
@@ -58,17 +58,17 @@ describe('Form interaction', async () => {
     expect(fieldDriver.get.value()).toBe('');
   });
 
-
   it('should clear values', async () => {
     const controller = new FormController({
       initialValues: {
-        [TestForm.FIELD_ONE_NAME]: 'batman is cool'
-      }
+        [TestForm.FIELD_ONE_NAME]: 'batman is cool',
+      },
     });
-
-    wrapper = mount(<TestForm controller={controller}>
-      <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter}/>
-    </TestForm>);
+    const wrapper = mount(
+      <TestForm controller={controller}>
+        <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter} />
+      </TestForm>,
+    );
 
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
