@@ -18,19 +18,19 @@ export const createInputAdapterDriver = (options: {wrapper: ReactWrapper; dataHo
         return API.get.inputNode().value;
       },
       meta: (key: string) => {
-        return API
-          .get.root()
+        return API.get
+          .root()
           .find(`[data-hook="meta_${key}"]`)
           .at(0)
-          .text()
+          .text();
       },
       errors: (key: string) => {
-        return API
-          .get.root()
+        return API.get
+          .root()
           .find(`[data-hook="error:${key}"]`)
           .at(0)
-          .text()
-      }
+          .text();
+      },
     },
 
     when: {

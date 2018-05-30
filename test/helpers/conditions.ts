@@ -10,6 +10,5 @@ export const waitInWrapper = (wrapper: ReactWrapper) => async (checkFunction: ()
     } else {
       return true;
     }
-
   });
 };
