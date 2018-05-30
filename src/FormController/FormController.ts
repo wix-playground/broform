@@ -374,12 +374,6 @@ export class FormController {
     this.fields.get(fieldName).meta.custom.set(key, value);
   };
 
-  //changes when user interacts with the the field, usually 'focus' event
-  @action
-  setFieldTouched = (fieldName: string) => {
-    this.fields.get(fieldName).meta.isTouched = true;
-  };
-
   //changes when called adapted onChange handler
   @action
   changeFieldValue = (fieldName: string, value: any) => {
