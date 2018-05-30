@@ -262,13 +262,7 @@ export class FormController {
   @action
   protected resetToValues = (values: FormValues) => {
     this.fields.forEach((field: FormField, name: string) => {
-      const value = get(values, name);
-
-      if (value === undefined && field.meta.initialValue !== undefined) {
-        field.value = field.meta.initialValue;
-      } else {
-        field.value = value;
-      }
+      field.value = get(values, name);
       field.meta.isTouched = false;
     });
     this.setSubmitCount(0);
@@ -343,6 +337,15 @@ export class FormController {
   @observable formCustomState: any = {};
   @action setFormCustomState = (key: string, value: any) => (this.formCustomState[key] = value);
 
+  //resets the form to initial values and making it pristine
+  reset = () => {
+    return this.resetToValues(this.options.initialValues);
+  };
+
+  clear = () => {
+    return this.resetToValues({});
+  };
+
   //is called when field is unmounted
   @action
   unRegisterField = (fieldName: string) => {
@@ -389,15 +392,6 @@ export class FormController {
     if (!this.fields.has(fieldName)) {
       this.createVirtualField(fieldName);
     }
-  };
-
-  //resets the form to initial values and making it pristine
-  reset = () => {
-    return this.resetToValues(this.options.initialValues);
-  };
-
-  clear = () => {
-    return this.resetToValues({});
   };
 
   //validates the form by calling form level onValidate function combined with field level validations

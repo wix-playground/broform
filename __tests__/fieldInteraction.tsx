@@ -1,12 +1,17 @@
 import * as React from 'react';
 import {mount, ReactWrapper} from 'enzyme';
+import {FormController} from '../src/FormController';
 import {TestForm} from '../test/components/TestForm';
 import {Field} from '../src/Field';
 import {InputAdapter} from '../test/components/InputAdapter';
 import {createInputAdapterDriver} from '../test/components/InputAdapter/InputAdapter.driver';
 import {createTestFormDriver} from '../test/components/TestForm.driver';
+import {waitInWrapper} from '../test/helpers/conditions';
+import {getMetaFromWrapper} from '../test/helpers/getters';
 
 describe('Field interactions', async () => {
+  const getMeta = (metaProps: string) => getMetaFromWrapper(wrapper, TestForm.FIELD_ONE_NAME)(metaProps);
+  const waitFor = (condition: () => boolean) => waitInWrapper(wrapper)(condition);
   let wrapper: ReactWrapper;
 
   it('should keep value if "persist=true"', () => {
@@ -86,4 +91,32 @@ describe('Field interactions', async () => {
 
     expect(fieldDriver.get.value()).toBe('');
   });
+
+  it('set custom state', async () => {
+    const formController = new FormController({});
+
+    expect(formController.API.getFieldMeta(TestForm.FIELD_ONE_NAME).custom).toEqual({});
+
+    wrapper = mount( <TestForm>
+      <Field
+        name={TestForm.FIELD_ONE_NAME}
+        adapter={InputAdapter}
+        adapterProps={{
+          customState: {
+            customProperty: 'custom value'
+          }
+        }}
+      />
+    </TestForm>);
+
+    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
+
+    fieldDriver.when.setCustomState();
+
+    await waitFor(() => {
+      return getMeta('custom:customProperty') === 'custom value';
+    });
+  });
+
+
 });

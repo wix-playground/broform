@@ -20,6 +20,12 @@ export const createInputAdapterDriver = (options: {wrapper: ReactWrapper; dataHo
     },
 
     when: {
+      setCustomState: () => {
+        API.get
+          .root()
+          .find(`[data-hook="set-custom-state"]`)
+          .simulate('click');
+      },
       focus: () => {
         API.get.input().simulate('focus');
       },
@@ -44,6 +50,7 @@ export const createInputAdapterDriver = (options: {wrapper: ReactWrapper; dataHo
       value: API.get.value,
     },
     when: {
+      setCustomState: API.when.setCustomState,
       focus: API.when.focus,
       blur: API.when.blur,
       validate: API.when.validate,

@@ -5,9 +5,19 @@ import {isNil} from 'lodash';
 import {Meta} from './Meta';
 import {Errors} from './Errors';
 
-export interface InputAdapterProps extends AdapterProps {}
+export interface InputAdapterProps extends AdapterProps {
+  customState?: {
+    [key: string]: string;
+  };
+}
 
 export class InputAdapter extends React.Component<InputAdapterProps> {
+  private setCustomState = () => {
+    const key = Object.keys(this.props.customState)[0];
+    const value = this.props.customState[key];
+    this.props.broform.setCustomState(key, value);
+  };
+
   render() {
     const {broform} = this.props;
     const {onFocus, onBlur, validate, name, onChange, value, meta} = broform;
@@ -31,6 +41,7 @@ export class InputAdapter extends React.Component<InputAdapterProps> {
 
         <Meta meta={meta} />
 
+        <span data-hook="set-custom-state" onClick={this.setCustomState} />
         <span data-hook="validate" onClick={validate} />
       </div>
     );

@@ -83,6 +83,10 @@ exports[`Render 1`] = `
         </span>
       </div>
       <span
+        data-hook="set-custom-state"
+        onClick={[Function]}
+      />
+      <span
         data-hook="validate"
         onClick={[Function]}
       />
@@ -162,6 +166,10 @@ exports[`Render 1`] = `
           0
         </span>
       </div>
+      <span
+        data-hook="set-custom-state"
+        onClick={[Function]}
+      />
       <span
         data-hook="validate"
         onClick={[Function]}

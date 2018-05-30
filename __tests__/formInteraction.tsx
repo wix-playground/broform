@@ -39,4 +39,48 @@ describe('Form interaction', async () => {
     expect(fieldDriver.get.value()).toBe('batman is cool');
   });
 
+  it('should clear values', async () => {
+    const controller = new FormController({
+      initialValues: {
+        [TestForm.FIELD_ONE_NAME]: 'batman is cool'
+      }
+    });
+
+    wrapper = mount(<TestForm controller={controller}>
+      <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter}/>
+    </TestForm>);
+
+    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
+
+    expect(fieldDriver.get.value()).toBe('batman is cool');
+
+    controller.API.clear();
+
+    expect(getMeta('form:isTouched')).toBe('false');
+
+    expect(fieldDriver.get.value()).toBe('');
+  });
+
+
+  it('should clear values', async () => {
+    const controller = new FormController({
+      initialValues: {
+        [TestForm.FIELD_ONE_NAME]: 'batman is cool'
+      }
+    });
+
+    wrapper = mount(<TestForm controller={controller}>
+      <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter}/>
+    </TestForm>);
+
+    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
+
+    expect(fieldDriver.get.value()).toBe('batman is cool');
+
+    controller.API.setFieldValue(TestForm.FIELD_ONE_NAME, 'joker is so cool');
+
+    expect(getMeta('form:isTouched')).toBe('false');
+
+    expect(fieldDriver.get.value()).toBe('joker is so cool');
+  });
 });
