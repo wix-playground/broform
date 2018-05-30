@@ -1,19 +1,16 @@
 module.exports = function (wallaby) {
   return {
     files: [
-      'tsconfig.json',
-      'src/**/*.ts',
-      'src/**/*.tsx',
-      'test/**/*.ts'
+      {pattern: 'tsconfig.json', instrument: false},
+      {pattern: 'test/**/*.ts*', instrument: false},
+      {pattern: 'src/**/*.ts*'},
     ],
     tests: [
-      'src/**/*.spec.ts',
-      'src/**/*.spec.tsx'
+      {pattern: '__tests__/*.ts*'},
     ],
+    testFramework: 'jest',
     env: {
       type: 'node',
-      runner: 'node'
-    },
-    testFramework: 'jest'
+    }
   };
 };
