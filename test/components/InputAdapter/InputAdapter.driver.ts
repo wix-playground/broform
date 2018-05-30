@@ -17,6 +17,20 @@ export const createInputAdapterDriver = (options: {wrapper: ReactWrapper; dataHo
       value: () => {
         return API.get.inputNode().value;
       },
+      meta: (key: string) => {
+        return API
+          .get.root()
+          .find(`[data-hook="meta_${key}"]`)
+          .at(0)
+          .text()
+      },
+      errors: (key: string) => {
+        return API
+          .get.root()
+          .find(`[data-hook="error:${key}"]`)
+          .at(0)
+          .text()
+      }
     },
 
     when: {
@@ -48,6 +62,8 @@ export const createInputAdapterDriver = (options: {wrapper: ReactWrapper; dataHo
   return {
     get: {
       value: API.get.value,
+      meta: API.get.meta,
+      errors: API.get.errors,
     },
     when: {
       setCustomState: API.when.setCustomState,

@@ -4,7 +4,6 @@ import {Field} from '../src/Field';
 import {FormController} from '../src/FormController';
 import {InputAdapter} from '../test/components/InputAdapter';
 import {TestForm} from '../test/components/TestForm';
-import {getMetaFromWrapper} from '../test/helpers/getters';
 import {noop} from 'lodash';
 import {waitInWrapper} from '../test/helpers/conditions';
 import {createInputAdapterDriver} from '../test/components/InputAdapter/InputAdapter.driver';
@@ -14,7 +13,6 @@ describe('Form meta', async () => {
   let wrapper: ReactWrapper;
 
   const waitFor = (condition: () => boolean) => waitInWrapper(wrapper)(condition);
-  const getMeta = (metaProps: string) => getMetaFromWrapper(wrapper, TestForm.FIELD_ONE_NAME)(metaProps);
 
   it('isValid', async () => {
     const controller = new FormController({
@@ -34,19 +32,19 @@ describe('Form meta', async () => {
     const formDriver = createTestFormDriver({wrapper});
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
-    expect(getMeta('form:isValid')).toBe('true');
+    expect(fieldDriver.get.meta('form:isValid')).toBe('true');
 
     fieldDriver.when.change('harvy');
     formDriver.when.submit();
-    await waitFor(() => getMeta('form:isValid') === 'false');
+    await waitFor(() => fieldDriver.get.meta('form:isValid') === 'false');
 
     fieldDriver.when.change('batman');
     formDriver.when.submit();
-    await waitFor(() => getMeta('form:isValid') === 'true');
+    await waitFor(() => fieldDriver.get.meta('form:isValid') === 'true');
 
     fieldDriver.when.change('joker');
     fieldDriver.when.validate();
-    await waitFor(() => getMeta('form:isValid') === 'false');
+    await waitFor(() => fieldDriver.get.meta('form:isValid') === 'false');
   });
 
   it('isTouched', () => {
@@ -54,13 +52,13 @@ describe('Form meta', async () => {
     wrapper = mount(<TestForm controller={controller}/>);
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
-    expect(getMeta('form:isTouched')).toBe('false');
+    expect(fieldDriver.get.meta('form:isTouched')).toBe('false');
 
     fieldDriver.when.focus();
-    expect(getMeta('form:isTouched')).toBe('true');
+    expect(fieldDriver.get.meta('form:isTouched')).toBe('true');
 
     fieldDriver.when.blur();
-    expect(getMeta('form:isTouched')).toBe('true');
+    expect(fieldDriver.get.meta('form:isTouched')).toBe('true');
   });
 
   describe('isDirty', () => {
@@ -73,15 +71,15 @@ describe('Form meta', async () => {
 
       const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
-      expect(getMeta('form:isDirty')).toBe('false');
+      expect(fieldDriver.get.meta('form:isDirty')).toBe('false');
 
       fieldDriver.when.change('batman');
 
-      expect(getMeta('form:isDirty')).toBe('true');
+      expect(fieldDriver.get.meta('form:isDirty')).toBe('true');
 
       fieldDriver.when.change('');
 
-      expect(getMeta('form:isDirty')).toBe('false');
+      expect(fieldDriver.get.meta('form:isDirty')).toBe('false');
     });
 
     it('using initial field default value', () => {
@@ -91,15 +89,15 @@ describe('Form meta', async () => {
 
       const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
-      expect(getMeta('form:isDirty')).toBe('false');
+      expect(fieldDriver.get.meta('form:isDirty')).toBe('false');
 
       fieldDriver.when.change('batman');
 
-      expect(getMeta('form:isDirty')).toBe('true');
+      expect(fieldDriver.get.meta('form:isDirty')).toBe('true');
 
       fieldDriver.when.change('');
 
-      expect(getMeta('form:isDirty')).toBe('false');
+      expect(fieldDriver.get.meta('form:isDirty')).toBe('false');
     });
   });
 
@@ -107,12 +105,13 @@ describe('Form meta', async () => {
     const controller = new FormController({});
     wrapper = mount(<TestForm controller={controller}/>);
     const formDriver = createTestFormDriver({wrapper});
+    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
-    expect(getMeta('form:submitCount')).toBe('0');
+    expect(fieldDriver.get.meta('form:submitCount')).toBe('0');
 
     formDriver.when.submit();
 
-    expect(getMeta('form:submitCount')).toBe('1');
+    expect(fieldDriver.get.meta('form:submitCount')).toBe('1');
   });
 
   it('isSubmitting', async () => {
@@ -123,15 +122,16 @@ describe('Form meta', async () => {
     });
     wrapper = mount(<TestForm controller={controller}/>);
     const formDriver = createTestFormDriver({wrapper});
+    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
-    expect(getMeta('form:isSubmitting')).toBe('false');
+    expect(fieldDriver.get.meta('form:isSubmitting')).toBe('false');
 
     formDriver.when.submit();
 
-    expect(getMeta('form:isSubmitting')).toBe('true');
+    expect(fieldDriver.get.meta('form:isSubmitting')).toBe('true');
 
     await waitFor(() => {
-      return getMeta('form:isSubmitting') === 'false';
+      return fieldDriver.get.meta('form:isSubmitting') === 'false';
     });
   });
 
@@ -144,15 +144,16 @@ describe('Form meta', async () => {
     });
     wrapper = mount(<TestForm controller={controller}/>);
     const formDriver = createTestFormDriver({wrapper});
+    const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
-    expect(getMeta('form:isValidating')).toBe('false');
+    expect(fieldDriver.get.meta('form:isValidating')).toBe('false');
 
     formDriver.when.submit();
 
-    expect(getMeta('form:isValidating')).toBe('true');
+    expect(fieldDriver.get.meta('form:isValidating')).toBe('true');
 
     await waitFor(() => {
-      return getMeta('form:isValidating') === 'false';
+      return fieldDriver.get.meta('form:isValidating') === 'false';
     });
   });
 });

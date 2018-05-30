@@ -4,13 +4,10 @@ import {Field} from '../src/Field';
 import {FormController} from '../src/FormController';
 import {InputAdapter} from '../test/components/InputAdapter';
 import {TestForm} from '../test/components/TestForm';
-import {getMetaFromWrapper} from '../test/helpers/getters';
 import {createInputAdapterDriver} from '../test/components/InputAdapter/InputAdapter.driver';
 
 describe('Form interaction', async () => {
   let wrapper: ReactWrapper;
-
-  const getMeta = (metaProps: string) => getMetaFromWrapper(wrapper, TestForm.FIELD_ONE_NAME)(metaProps);
 
   it('should reset values', async () => {
     const controller = new FormController({
@@ -29,13 +26,13 @@ describe('Form interaction', async () => {
 
     fieldDriver.when.change('harvy is cool');
 
-    expect(getMeta('form:isTouched')).toBe('true');
+    expect(fieldDriver.get.meta('form:isTouched')).toBe('true');
 
     expect(fieldDriver.get.value()).toBe('harvy is cool');
 
     controller.API.reset();
 
-    expect(getMeta('form:isTouched')).toBe('false');
+    expect(fieldDriver.get.meta('form:isTouched')).toBe('false');
     expect(fieldDriver.get.value()).toBe('batman is cool');
   });
 
@@ -56,7 +53,7 @@ describe('Form interaction', async () => {
 
     controller.API.clear();
 
-    expect(getMeta('form:isTouched')).toBe('false');
+    expect(fieldDriver.get.meta('form:isTouched')).toBe('false');
 
     expect(fieldDriver.get.value()).toBe('');
   });
@@ -79,7 +76,7 @@ describe('Form interaction', async () => {
 
     controller.API.setFieldValue(TestForm.FIELD_ONE_NAME, 'joker is so cool');
 
-    expect(getMeta('form:isTouched')).toBe('false');
+    expect(fieldDriver.get.meta('form:isTouched')).toBe('false');
 
     expect(fieldDriver.get.value()).toBe('joker is so cool');
   });

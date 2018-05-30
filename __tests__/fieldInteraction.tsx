@@ -7,10 +7,8 @@ import {InputAdapter} from '../test/components/InputAdapter';
 import {createInputAdapterDriver} from '../test/components/InputAdapter/InputAdapter.driver';
 import {createTestFormDriver} from '../test/components/TestForm.driver';
 import {waitInWrapper} from '../test/helpers/conditions';
-import {getMetaFromWrapper} from '../test/helpers/getters';
 
 describe('Field interactions', async () => {
-  const getMeta = (metaProps: string) => getMetaFromWrapper(wrapper, TestForm.FIELD_ONE_NAME)(metaProps);
   const waitFor = (condition: () => boolean) => waitInWrapper(wrapper)(condition);
   let wrapper: ReactWrapper;
 
@@ -82,12 +80,12 @@ describe('Field interactions', async () => {
     wrapper = mount(<StatefulForm />);
 
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
+    const toggleField = wrapper.find(`[data-hook="toggle-field"]`);
 
     fieldDriver.when.change('batman');
 
-    wrapper.find(`[data-hook="toggle-field"]`).simulate('click');
-
-    wrapper.find(`[data-hook="toggle-field"]`).simulate('click');
+    toggleField.simulate('click');
+    toggleField.simulate('click');
 
     expect(fieldDriver.get.value()).toBe('');
   });
@@ -114,7 +112,7 @@ describe('Field interactions', async () => {
     fieldDriver.when.setCustomState();
 
     await waitFor(() => {
-      return getMeta('custom:customProperty') === 'custom value';
+      return fieldDriver.get.meta('custom:customProperty') === 'custom value';
     });
   });
 
