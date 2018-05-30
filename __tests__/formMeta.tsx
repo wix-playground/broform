@@ -13,18 +13,20 @@ describe('Form meta', async () => {
   const waitFor = (condition: () => boolean) => waitInWrapper(wrapper)(condition);
 
   it('isValid', async () => {
-    wrapper = mount(<TestForm
-      onSubmit={jest.fn()}
-  onValidate={async (values) => {
-    if (values[TestForm.FIELD_ONE_NAME] === 'batman') {
-    return {};
-  } else {
-    return {
-    [TestForm.FIELD_ONE_NAME]: ['notBatman', {id: 'notBruceWayne'}],
-  };
-  }
-  }}
-    />);
+    wrapper = mount(
+      <TestForm
+        onSubmit={jest.fn()}
+        onValidate={async (values) => {
+          if (values[TestForm.FIELD_ONE_NAME] === 'batman') {
+            return {};
+          } else {
+            return {
+              [TestForm.FIELD_ONE_NAME]: ['notBatman', {id: 'notBruceWayne'}],
+            };
+          }
+        }}
+      />,
+    );
     const formDriver = createTestFormDriver({wrapper});
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
@@ -58,11 +60,15 @@ describe('Form meta', async () => {
 
   describe('isDirty', () => {
     it('using initial values', () => {
-      wrapper = mount(<TestForm initialValues={{
-        [TestForm.FIELD_ONE_NAME]: '',
-      }}>
-        <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter}/>
-      </TestForm>);
+      wrapper = mount(
+        <TestForm
+          initialValues={{
+            [TestForm.FIELD_ONE_NAME]: '',
+          }}
+        >
+          <Field name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter} />
+        </TestForm>,
+      );
 
       const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
@@ -78,9 +84,11 @@ describe('Form meta', async () => {
     });
 
     it('using initial field default value', () => {
-      wrapper = mount(<TestForm>
-        <Field defaultValue={''} name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter}/>
-      </TestForm>);
+      wrapper = mount(
+        <TestForm>
+          <Field defaultValue={''} name={TestForm.FIELD_ONE_NAME} adapter={InputAdapter} />
+        </TestForm>,
+      );
 
       const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
@@ -109,9 +117,13 @@ describe('Form meta', async () => {
   });
 
   it('isSubmitting', async () => {
-    wrapper = mount(<TestForm onValidate={() => {
-    return Promise.resolve();
-  }}/>);
+    wrapper = mount(
+      <TestForm
+        onValidate={() => {
+          return Promise.resolve();
+        }}
+      />,
+    );
     const formDriver = createTestFormDriver({wrapper});
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
@@ -127,12 +139,14 @@ describe('Form meta', async () => {
   });
 
   it('isValidating', async () => {
-    wrapper = mount(<TestForm
-      onSubmit={jest.fn()}
-  onValidate={async (values) => {
-    return values.batman === 'batman' ? {} : {batman: ['notBatman']};
-  }}
-    />);
+    wrapper = mount(
+      <TestForm
+        onSubmit={jest.fn()}
+        onValidate={async (values) => {
+          return values.batman === 'batman' ? {} : {batman: ['notBatman']};
+        }}
+      />,
+    );
     const formDriver = createTestFormDriver({wrapper});
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
