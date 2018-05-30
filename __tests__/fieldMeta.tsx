@@ -21,8 +21,7 @@ describe('Field meta', async () => {
   });
 
   it('isActive', () => {
-    const formController = new FormController({});
-    wrapper = mount(<TestForm controller={formController} />);
+    wrapper = mount(<TestForm />);
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
     expect(fieldDriver.get.meta('isActive')).not.toBe('true');
@@ -35,8 +34,7 @@ describe('Field meta', async () => {
   });
 
   it('isTouched', () => {
-    const formController = new FormController({});
-    wrapper = mount(<TestForm controller={formController} />);
+    wrapper = mount(<TestForm />);
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
     expect(fieldDriver.get.meta('isTouched')).not.toBe('true');
@@ -49,9 +47,7 @@ describe('Field meta', async () => {
   });
 
   it('isDirty', () => {
-    const formController = new FormController({});
-
-    wrapper = mount(<TestForm controller={formController} />);
+    wrapper = mount(<TestForm />);
 
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
 
@@ -81,9 +77,8 @@ describe('Field meta', async () => {
   });
 
   it('isValidating', async () => {
-    const formController = new FormController({});
     wrapper = mount(
-      <TestForm controller={formController}>
+      <TestForm>
         <Field
           onValidate={async (value) => {
             return value === 'batman' ? null : 'notBatman';

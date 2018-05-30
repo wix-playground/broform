@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {mount, ReactWrapper} from 'enzyme';
-import {noop} from 'lodash';
 import {FormController} from '../src/FormController';
 import {createInputAdapterDriver} from '../test/components/InputAdapter/InputAdapter.driver';
 import {TestForm} from '../test/components/TestForm';
@@ -13,7 +12,7 @@ describe('Validation', async () => {
 
   it('has errors', async () => {
     const controller = new FormController({
-      onSubmit: noop,
+      onSubmit: jest.fn(),
       onValidate: async (values) => {
         if (values.batman === 'batman') {
           return {};
