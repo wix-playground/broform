@@ -25,11 +25,9 @@ export const createInputAdapterDriver = (options: {wrapper: ReactWrapper; dataHo
           .text();
       },
       errors: (key: string) => {
-        return API.get
-          .root()
-          .find(`[data-hook="error:${key}"]`)
-          .at(0)
-          .text();
+        const error = API.get.root().find(`[data-hook="error:${key}"]`);
+
+        return error.length ? error.at(0).text() : null;
       },
     },
 

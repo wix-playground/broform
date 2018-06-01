@@ -17,7 +17,7 @@ describe('Form meta', async () => {
             return {};
           } else {
             return {
-              [TestForm.FIELD_ONE_NAME]: ['notBatman', {id: 'notBruceWayne'}],
+              [TestForm.FIELD_ONE_NAME]: ['notBatman', 'notBruceWayne'],
             };
           }
         }}
