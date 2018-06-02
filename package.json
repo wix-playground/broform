@@ -33,38 +33,6 @@
       "tslint --fix"
     ]
   },
-  "jest": {
-    "setupFiles": [
-      "./test/jest-setup.ts"
-    ],
-    "watchPlugins": [
-      "jest-watch-typeahead/filename",
-      "jest-watch-typeahead/testname"
-    ],
-    "testEnvironmentOptions": {
-      "pretendToBeVisual": true
-    },
-    "moduleNameMapper": {
-      "^.+\\.(css|scss)$": "identity-obj-proxy"
-    },
-    "transform": {
-      "^.+\\.(ts|tsx)?$": "ts-jest"
-    },
-    "globals": {
-      "ts-jest": {
-        "enableTsDiagnostics": false,
-        "ignoreCoverageForDecorators": true,
-        "ignoreCoverageForAllDecorators": true
-      }
-    },
-    "testRegex": "/__tests__/.*\\.(ts|tsx)$",
-    "moduleFileExtensions": [
-      "ts",
-      "js",
-      "tsx",
-      "json"
-    ]
-  },
   "main": "./dist/src/index.js",
   "devDependencies": {
     "@types/enzyme": "^3.1.10",
