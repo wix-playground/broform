@@ -11,6 +11,10 @@ export class Form extends React.Component<FormProps, any> {
 
   constructor(props: any) {
     super(props);
+    if (props.controller && Object.keys(props).length > 2) {
+      //add children to the count
+      throw new Error('You should provide either single "controller" prop or pass props directly');
+    }
     //controller can be injected by prop and created in any place outside of `render` function / component where used
     this.controller = props.controller || new FormController(props);
   }
