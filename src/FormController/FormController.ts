@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {observable, action, runInAction, toJS, computed} from 'mobx';
 import {flatten} from 'flat';
-import {Field, ValidationFunction, EqualityFunction, FieldProps} from '../Field';
+import {Field, ValidationFunction, EqualityFunction, FieldProps, FormatterFunction} from '../Field';
 const set = require('lodash/set');
 const get = require('lodash/get');
 const merge = require('lodash/merge');
@@ -67,8 +67,10 @@ export interface FormAPI {
 
 export class FormController {
   //Form options
-  @observable protected options: FormControllerOptions;
-  @action setOptions = (options: FormControllerOptions) => (this.options = options);
+  @observable
+  protected options: FormControllerOptions;
+  @action
+  setOptions = (options: FormControllerOptions) => (this.options = options);
 
   //set current form values as initialValues
   @action
@@ -78,6 +80,19 @@ export class FormController {
       field.meta.initialValue = get(this.options.initialValues, field.props.name);
     });
   };
+
+  //get all field level validations
+  @computed
+  protected get fieldFormatters() {
+    const fieldFormatters: {[index: string]: FormatterFunction} = {};
+    this.fields.forEach((field: FormField, name: string) => {
+      if (field.instance && field.props.onFormat) {
+        fieldFormatters[name] = field.props.onFormat;
+      }
+    });
+
+    return fieldFormatters;
+  }
 
   //get all field level validations
   @computed
@@ -117,6 +132,11 @@ export class FormController {
   protected get formattedValues() {
     const {formatter} = this.options;
     const values = this.values;
+
+    Object.keys(this.fieldFormatters).forEach((fieldName) => {
+      values[fieldName] = this.fieldFormatters[fieldName](get(this.values, fieldName));
+    });
+
     return formatter ? formatter(values) : values;
   }
 
@@ -170,7 +190,8 @@ export class FormController {
     this.errors = Object.keys(errors).length ? errors : null;
   };
   //All onValidate errors
-  @observable protected errors: FormValidationErrors = null;
+  @observable
+  protected errors: FormValidationErrors = null;
 
   //validates particular field by calling field level validator passed to Field as a `validate` prop
   protected validateField = async (name: string): Promise<any> => {
@@ -181,24 +202,26 @@ export class FormController {
   protected createVirtualField = (name: string) => {
     const self = this;
 
+    const meta: FormFieldMeta = {
+      isEqual: (a: any, b: any) => a === b,
+      custom: observable.map(),
+      initialValue: undefined,
+      isTouched: false,
+      isActive: false,
+      isValidating: false,
+      isRegistered: false,
+      get isDirty() {
+        const field = self.fields.get(name);
+        return !field.meta.isEqual(field.value, field.meta.initialValue);
+      },
+    };
+
     this.fields.set(name, {
       instance: null,
       errors: null,
       value: undefined,
       props: undefined,
-      meta: {
-        isEqual: (a: any, b: any) => a === b,
-        custom: observable.map(),
-        initialValue: undefined,
-        isTouched: false,
-        isActive: false,
-        isValidating: false,
-        isRegistered: false,
-        get isDirty() {
-          const field = self.fields.get(name);
-          return !field.meta.isEqual(field.value, field.meta.initialValue);
-        },
-      },
+      meta,
     });
   };
 
@@ -330,20 +353,28 @@ export class FormController {
   }
 
   //changed when form starts or finishes validating
-  @observable isValidating: boolean = false;
-  @action setIsValidating = (state: boolean) => (this.isValidating = state);
+  @observable
+  isValidating: boolean = false;
+  @action
+  setIsValidating = (state: boolean) => (this.isValidating = state);
 
   //changed when form starts or finishes submit process
-  @observable isSubmitting: boolean = false;
-  @action setIsSubmitting = (state: boolean) => (this.isSubmitting = state);
+  @observable
+  isSubmitting: boolean = false;
+  @action
+  setIsSubmitting = (state: boolean) => (this.isSubmitting = state);
 
   //increments upon every submit try
-  @observable submitCount: number = 0;
-  @action setSubmitCount = (state: number) => (this.submitCount = state);
+  @observable
+  submitCount: number = 0;
+  @action
+  setSubmitCount = (state: number) => (this.submitCount = state);
 
   //used for setting custom form state, which should be accessible from form api, is passed to adapter options as well
-  @observable formCustomState: any = {};
-  @action setFormCustomState = (key: string, value: any) => (this.formCustomState[key] = value);
+  @observable
+  formCustomState: any = {};
+  @action
+  setFormCustomState = (key: string, value: any) => (this.formCustomState[key] = value);
 
   //resets the form to initial values and making it pristine
   reset = () => {
