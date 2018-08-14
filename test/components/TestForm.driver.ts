@@ -8,7 +8,7 @@ export const createTestFormDriver = (options: {wrapper: ReactWrapper}) => {
   const API = {
     get: {
       values: () => {
-        return JSON.parse(wrapper.find('[data-hook="form-values"]').getDOMNode().textContent);
+        return JSON.parse(wrapper.find('[data-hook="form-values"]').getDOMNode().textContent || '');
       },
       serialized: () => {
         return toJson(wrapper, {noKey: true, mode: 'deep'}) as Json;
