@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {observable, action, runInAction, toJS, computed} from 'mobx';
 import {flatten} from 'flat';
-import {Field, ValidationFunction, EqualityFunction, FieldProps, FormatterFunction} from '../Field';
+import {Field, ValidationFunction, EqualityCheckFunction, FieldProps, FormatterFunction} from '../Field';
 const set = require('lodash/set');
 const get = require('lodash/get');
 const merge = require('lodash/merge');
@@ -33,7 +33,7 @@ export interface FormField {
 
 export interface FormFieldMeta {
   custom: {[key: string]: any};
-  isEqual: EqualityFunction;
+  isEqual: EqualityCheckFunction;
   initialValue: any;
   isTouched: boolean;
   isActive: boolean;
@@ -228,7 +228,7 @@ export class FormController {
   //used for first time field creation
   @action
   protected updateFieldAsNew = (fieldInstance: Field, props: FieldProps) => {
-    const {name, isEqual} = props;
+    const {name, onEqualityCheck} = props;
     const field = this.fields.get(name);
 
     const initialValue =
@@ -239,7 +239,7 @@ export class FormController {
       props,
       value: initialValue,
       meta: {
-        isEqual,
+        onEqualityCheck: onEqualityCheck,
         initialValue,
         isRegistered: true,
       },
