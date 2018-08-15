@@ -6,7 +6,7 @@ import {FormPart, FormPartProps} from '../FormPart';
 export interface FormProps extends FormControllerOptions, FormPartProps {}
 
 @observer
-export class Form extends React.Component<FormProps, any> {
+export class Form extends React.Component<FormProps> {
   controller: FormController;
 
   constructor(props: any) {

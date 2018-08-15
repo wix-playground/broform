@@ -19,15 +19,15 @@ export type FieldValidationError = string | string[] | null;
 export interface FormControllerOptions {
   initialValues?: FormValues;
   onValidate?: (values: any) => any;
-  onSubmit?: (errors: FormValidationErrors, values: FormValues, submitEvent?: React.FormEvent<any>) => void;
   formatter?: (values: FormValues) => FormValues;
+  onSubmit: (errors: FormValidationErrors, values: FormValues, submitEvent?: React.FormEvent<any>) => void;
 }
 
 export interface FormField {
   instance: null | Field;
   errors: FieldValidationError;
   meta: FormFieldMeta;
-  props: null | FieldProps;
+  props: undefined | FieldProps;
   value: any;
 }
 
@@ -68,7 +68,7 @@ export interface FormAPI {
 export class FormController {
   //Form options
   @observable
-  protected options: FormControllerOptions;
+  protected options!: FormControllerOptions;
   @action
   setOptions = (options: FormControllerOptions) => (this.options = options);
 
@@ -77,7 +77,7 @@ export class FormController {
   protected updateInitialValues = () => {
     this.options.initialValues = this.values;
     this.fields.forEach((field: FormField) => {
-      field.meta.initialValue = get(this.options.initialValues, field.props.name);
+      field.meta.initialValue = get(this.options.initialValues, field.props!.name);
     });
   };
 
@@ -86,8 +86,8 @@ export class FormController {
   protected get fieldFormatters() {
     const fieldFormatters: {[index: string]: FormatterFunction} = {};
     this.fields.forEach((field: FormField, name: string) => {
-      if (field.instance && field.props.onFormat) {
-        fieldFormatters[name] = field.props.onFormat;
+      if (field.instance && field.props!.onFormat) {
+        fieldFormatters[name] = field.props!.onFormat as FormatterFunction;
       }
     });
 
@@ -99,8 +99,8 @@ export class FormController {
   protected get fieldValidations() {
     const fieldValidations: {[index: string]: ValidationFunction} = {};
     this.fields.forEach((field: FormField, name: string) => {
-      if (field.instance && field.props.onValidate) {
-        fieldValidations[name] = field.props.onValidate;
+      if (field.instance && field.props!.onValidate) {
+        fieldValidations[name] = field.props!.onValidate as ValidationFunction;
       }
     });
 
@@ -157,7 +157,7 @@ export class FormController {
       const errors: {[index: string]: FieldValidationError} = {};
 
       Object.keys(this.fieldValidations).forEach((fieldName) => {
-        const fieldMeta = this.fields.get(fieldName).meta;
+        const fieldMeta = this.fields.get(fieldName)!.meta;
 
         runInAction(() => (fieldMeta.isValidating = true));
 
@@ -187,7 +187,7 @@ export class FormController {
 
   @action
   protected setErrors = (errors: FormValidationErrors) => {
-    this.errors = Object.keys(errors).length ? errors : null;
+    this.errors = errors && Object.keys(errors).length ? errors : null;
   };
   //All onValidate errors
   @observable
@@ -211,7 +211,7 @@ export class FormController {
       isValidating: false,
       isRegistered: false,
       get isDirty() {
-        const field = self.fields.get(name);
+        const field = self.fields.get(name)!;
         return !field.meta.isEqual(field.value, field.meta.initialValue);
       },
     };
@@ -249,7 +249,7 @@ export class FormController {
   //used for cases when field was created, unmounted and created again
   @action
   protected updateFieldAsExisting = (fieldInstance: Field, props: FieldProps) => {
-    const field = this.fields.get(props.name);
+    const field = this.fields.get(props.name)!;
 
     field.instance = fieldInstance;
   };
@@ -257,7 +257,7 @@ export class FormController {
   //general handler for registering the field upon it's mounting
   registerField = (fieldInstance: Field, props: FieldProps) => {
     const {name} = props;
-    if (this.fields.has(name) && this.fields.get(name).meta.isRegistered) {
+    if (this.fields.has(name) && this.fields.get(name)!.meta.isRegistered) {
       this.updateFieldAsExisting(fieldInstance, props);
     } else {
       this.createVirtualField(name);
@@ -268,7 +268,7 @@ export class FormController {
   //sets errors for all fields
   @action
   protected updateErrorOnEveryFieldUsing = (formValidationErrors: FormValidationErrors) => {
-    const fieldErrors: {[key: string]: string[] | null} = formValidationErrors
+    const fieldErrors: {[key: string]: string[]} | null = formValidationErrors
       ? flatten(formValidationErrors, {
           safe: true,
         })
@@ -276,8 +276,7 @@ export class FormController {
 
     this.fields.forEach((field) => {
       if (field.instance) {
-        const name = field.props.name;
-        const errors = fieldErrors && fieldErrors[name];
+        const errors = fieldErrors && fieldErrors[field.props!.name];
 
         field.errors = errors ? errors : null;
       }
@@ -286,7 +285,7 @@ export class FormController {
 
   protected getFieldMeta = (fieldName: string) => {
     this.createFieldIfDontExist(fieldName);
-    return toJS(this.fields.get(fieldName).meta);
+    return toJS(this.fields.get(fieldName)!.meta);
   };
 
   //general handler for resetting form to specific state
@@ -378,7 +377,7 @@ export class FormController {
 
   //resets the form to initial values and making it pristine
   reset = () => {
-    return this.resetToValues(this.options.initialValues);
+    return this.options.initialValues && this.resetToValues(this.options.initialValues);
   };
 
   clear = () => {
@@ -388,8 +387,8 @@ export class FormController {
   //is called when field is unmounted
   @action
   unRegisterField = (fieldName: string) => {
-    const field = this.fields.get(fieldName);
-    if (field.props.persist) {
+    const field = this.fields.get(fieldName)!;
+    if (field.props!.persist) {
       field.instance = null;
     } else {
       this.fields.delete(fieldName);
@@ -399,7 +398,7 @@ export class FormController {
   //changes field active state usually based on 'blur'/'focus' events
   @action
   changeFieldActiveState = (fieldName: string, isActive: boolean) => {
-    const field = this.fields.get(fieldName);
+    const field = this.fields.get(fieldName)!;
     if (isActive) {
       field.meta.isTouched = true;
     }
@@ -410,14 +409,14 @@ export class FormController {
   @action
   setFieldCustomState = (fieldName: string, key: string, value: any) => {
     this.createFieldIfDontExist(fieldName);
-    this.fields.get(fieldName).meta.custom.set(key, value);
+    this.fields.get(fieldName)!.meta.custom.set(key, value);
   };
 
   //changes when called adapted onChange handler
   @action
   changeFieldValue = (fieldName: string, value: any) => {
     this.createFieldIfDontExist(fieldName);
-    const field = this.fields.get(fieldName);
+    const field = this.fields.get(fieldName)!;
     field.value = value;
   };
 

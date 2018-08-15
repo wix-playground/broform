@@ -16,6 +16,6 @@ export interface FormPartProps extends FormPartOwnProps, FormPartInjectedProps {
 @observer
 export class FormPart extends React.Component<FormPartProps> {
   render() {
-    return this.props.children(this.props.controller.API);
+    return this.props.children(this.props.controller!.API);
   }
 }

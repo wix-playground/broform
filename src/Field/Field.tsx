@@ -66,7 +66,7 @@ export class Field extends React.Component<FieldProps> {
   //meta info passed to Adapter
   @computed
   protected get meta(): AdapterMetaInfo {
-    const {controller} = this.props;
+    const controller = this.props.controller!;
     const {meta, errors} = this.field;
 
     const adapterErrors = toJS(errors);
@@ -101,37 +101,37 @@ export class Field extends React.Component<FieldProps> {
 
   @computed
   get field(): FormField {
-    return this.props.controller.fields.get(this.props.name);
+    return this.props.controller!.fields.get(this.props.name) as FormField;
   }
 
   //custom state for field, passed to adapter
   protected setCustomState = (key: string, value: any) => {
-    this.props.controller.setFieldCustomState(this.props.name, key, value);
+    this.props.controller!.setFieldCustomState(this.props.name, key, value);
   };
 
   //focus handler, passed to adapter
   protected onFocus = (): void => {
-    this.props.controller.changeFieldActiveState(this.props.name, true);
+    this.props.controller!.changeFieldActiveState(this.props.name, true);
   };
 
   //blur handler, passed to adapter
   protected onBlur = (): void => {
-    this.props.controller.changeFieldActiveState(this.props.name, false);
+    this.props.controller!.changeFieldActiveState(this.props.name, false);
   };
 
   //value change handler, passed to adapter
   protected onChange = (value: any): void => {
-    this.props.controller.changeFieldValue(this.props.name, value);
+    this.props.controller!.changeFieldValue(this.props.name, value);
   };
 
   //registers Field in FormController
   componentDidMount() {
-    this.props.controller.registerField(this, this.props);
+    this.props.controller!.registerField(this, this.props);
   }
 
   //unregisters Field in FormController
   componentWillUnmount() {
-    this.props.controller.unRegisterField(this.props.name);
+    this.props.controller!.unRegisterField(this.props.name);
   }
 
   //render the adapter passed as `adapter` prop  with optional `adapterProps` prop,
@@ -141,7 +141,8 @@ export class Field extends React.Component<FieldProps> {
       return null;
     }
 
-    const {controller, name} = this.props;
+    const {name} = this.props;
+    const controller = this.props.controller!;
 
     const injectedAdapterProps: AdapterProps = {
       broform: {
@@ -160,7 +161,7 @@ export class Field extends React.Component<FieldProps> {
     return this.props.adapter ? (
       <this.props.adapter {...injectedAdapterProps} {...this.props.adapterProps} />
     ) : (
-      this.props.children(injectedAdapterProps)
+      this.props.children!(injectedAdapterProps)
     );
   }
 }
