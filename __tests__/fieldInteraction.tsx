@@ -10,7 +10,7 @@ import {waitFor} from '../test/helpers/conditions';
 
 describe('Field interactions', async () => {
   it('should keep value if "persist=true"', () => {
-    class StatefulForm extends React.Component<null, {hiddenField: boolean}> {
+    class StatefulForm extends React.Component<{}, {hiddenField: boolean}> {
       state = {
         hiddenField: false,
       };
@@ -54,7 +54,7 @@ describe('Field interactions', async () => {
   });
 
   it('should not keep value', () => {
-    class StatefulForm extends React.Component<null, {hiddenField: boolean}> {
+    class StatefulForm extends React.Component<{props: null}, {hiddenField: boolean}> {
       state = {
         hiddenField: false,
       };
@@ -80,7 +80,7 @@ describe('Field interactions', async () => {
         );
       }
     }
-    const wrapper = mount(<StatefulForm />);
+    const wrapper = mount(<StatefulForm props={null}/>);
     const fieldDriver = createInputAdapterDriver({wrapper, dataHook: TestForm.FIELD_ONE_NAME});
     const toggleField = wrapper.find(`[data-hook="toggle-field"]`);
     const NEW_VALUE = 'batman';

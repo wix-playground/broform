@@ -1,5 +1,5 @@
 {
-  "name": "@wix/broform",
+  "name": "broform",
   "version": "1.0.0",
   "license": "MIT",
   "private": false,
@@ -11,9 +11,6 @@
   ],
   "engines": {
     "node": ">=8"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "build": "webpack --config webpack.config.js",

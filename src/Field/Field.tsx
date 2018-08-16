@@ -34,7 +34,7 @@ export interface AdapterProps {
   };
 }
 
-export type FormatterFunction = <T>(value: T) => T;
+export type FormatterFunction = (value: any) => any;
 export type EqualityCheckFunction = (newValue: any, oldValue: any) => boolean;
 
 export interface InjectedFieldProps {

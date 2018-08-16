@@ -20,7 +20,7 @@ export interface FormControllerOptions {
   initialValues?: FormValues;
   onValidate?: (values: any) => any;
   formatter?: (values: FormValues) => FormValues;
-  onSubmit: (errors: FormValidationErrors, values: FormValues, submitEvent?: React.FormEvent<any>) => void;
+  onSubmit?: (errors: FormValidationErrors, values: FormValues, submitEvent?: React.FormEvent<any>) => void;
 }
 
 export interface FormField {
@@ -455,7 +455,7 @@ export class FormController {
     await this.validate();
 
     try {
-      await this.options.onSubmit(this.errors, this.formattedValues, submitEvent);
+      await this.options.onSubmit!(this.errors, this.formattedValues, submitEvent);
 
       if (this.errors === null) {
         this.updateInitialValues();
