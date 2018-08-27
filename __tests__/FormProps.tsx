@@ -5,6 +5,7 @@ import {InputAdapter} from '../test/components/InputAdapter';
 import {Field} from '../src/Field';
 import {createTestFormDriver} from '../test/components/TestForm.driver';
 import {createInputAdapterDriver} from '../test/components/InputAdapter/InputAdapter.driver';
+import {waitFor} from '../test/helpers/conditions';
 
 describe('Form props', async () => {
   it('initialValues', async () => {
@@ -19,6 +20,29 @@ describe('Form props', async () => {
 
     expect(fieldDriver.get.value()).toBe('John Snow');
   });
+
+  it('onSubmitAfter', async () => {
+    const callbackStack: string[] = [];
+
+    const wrapper = mount(
+      <TestForm
+        initialValues={{
+          [TestForm.FIELD_ONE_NAME]: 'John Snow',
+        }}
+        onSubmit={() => callbackStack.push('onSubmit')}
+        onSubmitAfter={() => callbackStack.push('onSubmitAfter')}
+      />,
+    );
+
+    const formDriver = createTestFormDriver({wrapper});
+    formDriver.when.submit();
+
+    await waitFor(wrapper)(() => {
+      const [firstCall, secondCall] = callbackStack;
+      return firstCall === 'onSubmit' && secondCall === 'onSubmitAfter';
+    });
+  });
+
 
   it('formatter (with field support)', async () => {
     const onValidate = jest.fn();

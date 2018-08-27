@@ -1,9 +1,6 @@
 module.exports = {
   setupFiles: ['./test/jest-setup.ts'],
   watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
-  testEnvironmentOptions: {
-    pretendToBeVisual: true,
-  },
   moduleNameMapper: {
     '^.+\\.(css|scss)$': 'identity-obj-proxy',
   },

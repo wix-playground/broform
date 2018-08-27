@@ -21,6 +21,7 @@ export interface FormControllerOptions {
   onValidate?: (values: any) => any;
   formatter?: (values: FormValues) => FormValues;
   onSubmit?: (errors: FormValidationErrors, values: FormValues, submitEvent?: React.FormEvent<any>) => void;
+  onSubmitAfter?: (errors: FormValidationErrors, values: FormValues, submitEvent?: React.FormEvent<any>) => void;
 }
 
 export interface FormField {
@@ -463,6 +464,10 @@ export class FormController {
     } catch {
     } finally {
       this.setIsSubmitting(false);
+    }
+
+    if (this.options.onSubmitAfter) {
+      this.options.onSubmitAfter(this.errors, this.formattedValues, submitEvent);
     }
   };
 }
