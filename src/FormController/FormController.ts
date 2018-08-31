@@ -19,7 +19,7 @@ export type FieldValidationError = string | string[] | null;
 export interface FormControllerOptions {
   initialValues?: FormValues;
   onValidate?: (values: any) => any;
-  formatter?: (values: FormValues) => FormValues;
+  onFormat?: (values: FormValues) => FormValues;
   onSubmit?: (errors: FormValidationErrors, values: FormValues, submitEvent?: React.FormEvent<any>) => void;
   onSubmitAfter?: (errors: FormValidationErrors, values: FormValues, submitEvent?: React.FormEvent<any>) => void;
 }
@@ -131,14 +131,14 @@ export class FormController {
   //used for passing safe copy of values to users form child render function
   @computed
   protected get formattedValues() {
-    const {formatter} = this.options;
+    const {onFormat} = this.options;
     const values = this.values;
 
     Object.keys(this.fieldFormatters).forEach((fieldName) => {
-      values[fieldName] = this.fieldFormatters[fieldName](get(this.values, fieldName));
+      set(values, fieldName, this.fieldFormatters[fieldName](get(this.values, fieldName)));
     });
 
-    return formatter ? formatter(values) : values;
+    return onFormat ? onFormat(values) : values;
   }
 
   //executes general form validator passed to Form as a `onValidate` prop and returns errors
@@ -240,7 +240,7 @@ export class FormController {
       props,
       value: initialValue,
       meta: {
-        onEqualityCheck: onEqualityCheck,
+        onEqualityCheck,
         initialValue,
         isRegistered: true,
       },

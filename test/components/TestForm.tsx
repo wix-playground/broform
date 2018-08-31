@@ -9,8 +9,8 @@ export interface TestFormProps extends FormControllerOptions {
 }
 
 export class TestForm extends React.Component<TestFormProps> {
-  static FIELD_ONE_NAME = 'FIELD_ONE_NAME';
-  static FIELD_TWO_NAME = 'FIELD_TWO_NAME';
+  static FIELD_ONE_NAME = 'field_one_name';
+  static FIELD_TWO_NAME = 'field_two_name';
 
   render() {
     const {controller, ...formProps} = this.props;

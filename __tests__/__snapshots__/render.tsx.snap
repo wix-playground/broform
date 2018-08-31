@@ -7,11 +7,11 @@ exports[`Render 1`] = `
   onSubmit={[Function]}
 >
   <div
-    data-hook="FIELD_ONE_NAME"
+    data-hook="field_one_name"
   >
     <input
-      data-hook="input-FIELD_ONE_NAME"
-      name="FIELD_ONE_NAME"
+      data-hook="input-field_one_name"
+      name="field_one_name"
       onBlur={[Function]}
       onChange={[Function]}
       onFocus={[Function]}
@@ -91,11 +91,11 @@ exports[`Render 1`] = `
     />
   </div>
   <div
-    data-hook="FIELD_TWO_NAME"
+    data-hook="field_two_name"
   >
     <input
-      data-hook="input-FIELD_TWO_NAME"
-      name="FIELD_TWO_NAME"
+      data-hook="input-field_two_name"
+      name="field_two_name"
       onBlur={[Function]}
       onChange={[Function]}
       onFocus={[Function]}
