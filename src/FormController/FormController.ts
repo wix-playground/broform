@@ -240,7 +240,7 @@ export class FormController {
       props,
       value: initialValue,
       meta: {
-        onEqualityCheck,
+        isEqual: onEqualityCheck,
         initialValue,
         isRegistered: true,
       },
