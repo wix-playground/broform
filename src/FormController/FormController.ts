@@ -146,7 +146,7 @@ export class FormController {
     return this.options.onValidate ? await this.options.onValidate(this.formattedValues) : {};
   };
 
-  //executes all field level validators passed to Fields as a `validate` prop and returns errors
+  //executes all field level validators passed to Fields as a `onValidate` prop and returns errors
   protected runFieldLevelValidations = async (): Promise<({[name: string]: FieldValidationError}) | {}> => {
     let pendingValidationCount = Object.keys(this.fieldValidations).length;
 
@@ -297,7 +297,7 @@ export class FormController {
       field.meta.isTouched = false;
     });
     this.setSubmitCount(0);
-    this.updateErrorOnEveryFieldUsing({});
+    this.updateErrorPropOnEveryField({});
   };
 
   constructor(options: FormControllerOptions) {
@@ -438,7 +438,7 @@ export class FormController {
 
     this.setErrors(merge(fieldValidationErrors, formValidationErrors));
 
-    this.updateErrorOnEveryFieldUsing(this.errors);
+    this.updateErrorPropOnEveryField(this.errors);
 
     this.setIsValidating(false);
   };
