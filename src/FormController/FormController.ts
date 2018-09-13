@@ -268,7 +268,7 @@ export class FormController {
 
   //sets errors for all fields
   @action
-  protected updateErrorOnEveryFieldUsing = (formValidationErrors: FormValidationErrors) => {
+  protected updateErrorPropOnEveryField = (formValidationErrors: FormValidationErrors) => {
     const fieldErrors: {[key: string]: string[]} | null = formValidationErrors
       ? flatten(formValidationErrors, {
           safe: true,
