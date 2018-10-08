@@ -34,7 +34,7 @@ export interface FormField {
 
 export interface FormFieldMeta {
   custom: {[key: string]: any};
-  isEqual: EqualityCheckFunction;
+  onEqualityCheck: EqualityCheckFunction;
   initialValue: any;
   isTouched: boolean;
   isActive: boolean;
@@ -204,7 +204,7 @@ export class FormController {
     const self = this;
 
     const meta: FormFieldMeta = {
-      isEqual: (a: any, b: any) => a === b,
+      onEqualityCheck: (a: any, b: any) => a === b,
       custom: observable.map(),
       initialValue: undefined,
       isTouched: false,
@@ -213,7 +213,7 @@ export class FormController {
       isRegistered: false,
       get isDirty() {
         const field = self.fields.get(name)!;
-        return !field.meta.isEqual(field.value, field.meta.initialValue);
+        return !field.meta.onEqualityCheck(field.value, field.meta.initialValue);
       },
     };
 
@@ -240,7 +240,7 @@ export class FormController {
       props,
       value: initialValue,
       meta: {
-        isEqual: onEqualityCheck,
+        onEqualityCheck,
         initialValue,
         isRegistered: true,
       },

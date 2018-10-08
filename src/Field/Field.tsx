@@ -15,8 +15,8 @@ export interface AdapterMetaInfo {
   isTouched: boolean;
   isActive: boolean;
   isValidating: boolean;
-  custom: {[key: string]: any};
   isRegistered: boolean;
+  custom: {[key: string]: any};
   form: FormMeta;
 }
 
@@ -58,8 +58,8 @@ export interface FieldProps extends InjectedFieldProps, OwnFieldProps {}
 @inject('controller')
 @observer
 export class Field extends React.Component<FieldProps> {
-  static defaultProps = {
-    isEqual: (newValue: any, oldValue: any) => newValue === oldValue,
+  static defaultProps: Partial<FieldProps> = {
+    onEqualityCheck: (newValue: any, oldValue: any) => newValue === oldValue,
     persist: false,
   };
 
