@@ -5,6 +5,7 @@ import {Field, ValidationFunction, EqualityCheckFunction, FieldProps, FormatterF
 const set = require('lodash/set');
 const get = require('lodash/get');
 const merge = require('lodash/merge');
+const cloneDeep = require('lodash/cloneDeep');
 
 export type FormValidationErrors = {
   [key: string]: string[] | FormValidationErrors;
@@ -132,7 +133,7 @@ export class FormController {
   @computed
   protected get formattedValues() {
     const {onFormat} = this.options;
-    const values = this.values;
+    const values = cloneDeep(this.values);
 
     Object.keys(this.fieldFormatters).forEach((fieldName) => {
       set(values, fieldName, this.fieldFormatters[fieldName](get(this.values, fieldName)));
